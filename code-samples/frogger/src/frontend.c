@@ -1,19 +1,30 @@
 #include "frog_frontend.h"
-
+// #include <Windows.h>
+#include <wchar.h>
+#include <locale.h>
 void print_overlay(void)
-{
+{   setlocale(LC_CTYPE, "");
     print_rectangle(0, BOARD_N + 1, 0, BOARD_M + 1);
     print_rectangle(0, BOARD_N + 1, BOARD_M + 2, BOARD_M + HUD_WIDTH + 3);
 
-    print_rectangle(1, 3, BOARD_M + 3, BOARD_M + HUD_WIDTH + 2);
-    print_rectangle(4, 6, BOARD_M + 3, BOARD_M + HUD_WIDTH + 2);
-    print_rectangle(7, 9, BOARD_M + 3, BOARD_M + HUD_WIDTH + 2);
-    print_rectangle(10, 12, BOARD_M + 3, BOARD_M + HUD_WIDTH + 2);
+    print_rectangle(1, 4, BOARD_M + 3, BOARD_M + HUD_WIDTH + 2);
+    print_rectangle(5, 8, BOARD_M + 3, BOARD_M + HUD_WIDTH + 2);
+    print_rectangle(9, 12, BOARD_M + 3, BOARD_M + HUD_WIDTH + 2);
+    print_rectangle(13, 18, BOARD_M + 3, BOARD_M + HUD_WIDTH + 2);
+    print_rectangle(24, 27, BOARD_M + 3, BOARD_M + HUD_WIDTH + 2);
 
-    MVPRINTW(2, BOARD_M + 5, "LEVEL");
-    MVPRINTW(5, BOARD_M + 5, "SCORE");
-    MVPRINTW(8, BOARD_M + 5, "SPEED");
-    MVPRINTW(11, BOARD_M + 5, "LIVES");
+    MVPRINTW(2, BOARD_M + 4, "HIGH SCORE");
+    MVPRINTW(3, BOARD_M + 4, "1927");
+    MVPRINTW(6, BOARD_M + 4, "SCORE");
+    MVPRINTW(7, BOARD_M + 4, "0000");
+    MVPRINTW(10, BOARD_M + 4, "LEVEL");
+    MVPRINTW(11, BOARD_M + 4, "0");
+    MVPRINTW(14, BOARD_M + 4, "NEXT");
+    MVADDCH(15, BOARD_M + 4, L"\u25A1");
+    // MVPRINTW(15, BOARD_M + 4, ACS_BLOCK);
+    MVPRINTW(25, BOARD_M + 4, "TIME");
+    MVPRINTW(26, BOARD_M + 4, "12:50");
+    // ▢▢▢▢
 
     MVPRINTW(BOARD_N / 2, (BOARD_M - INTRO_MESSAGE_LEN) / 2 + 1, INTRO_MESSAGE);
 }
@@ -51,6 +62,7 @@ void print_rectangle(int top_y, int bottom_y, int left_x, int right_x)
     MVADDCH(bottom_y, i, ACS_LRCORNER);
 }
 
+// вывод статов
 void print_stats(game_stats_t *stats)
 {
     MVPRINTW(2, BOARD_M + 12, "%d", stats->level);
