@@ -1,16 +1,17 @@
 // #include "fsm.h"
 
 // // This is a finite state machine realisation based on switch-case statement.
-// /* 
-//     Function sigact() describes state switching logic. 
+// /*
+//     Function sigact() describes state switching logic.
 //     States are checked in order specified in function sigact().
-//     It enters a state-case which it corresponds to, where begins another switch-case statement.
-//     Inner switch-case statement is looking for a signal given by get_signal().
-//     After finding it makes some action and switches state to the next one.
+//     It enters a state-case which it corresponds to, where begins another
+//     switch-case statement. Inner switch-case statement is looking for a
+//     signal given by get_signal(). After finding it makes some action and
+//     switches state to the next one.
 
-//     Pros: 
+//     Pros:
 //         1) Less memory usage.
-//     Cons: 
+//     Cons:
 //         1) A lot of codelines.
 // */
 
@@ -70,7 +71,8 @@
 //     }
 // }
 
-// void sigact(signals sig, frog_state *state, game_stats_t *stats, board_t *map, player_pos *frog_pos)
+// void sigact(signals sig, frog_state *state, game_stats_t *stats, board_t
+// *map, player_pos *frog_pos)
 // {
 //     switch (*state)
 //     {
@@ -87,7 +89,7 @@
 //                     *state = START;
 //                     break;
 //             }
-            
+
 //             break;
 //         case SPAWN:
 //             if (stats->level > LEVEL_CNT)
@@ -125,7 +127,7 @@
 //                 default:
 //                     break;
 //             }
-            
+
 //             if (*state != EXIT_STATE)
 //             {
 //                 if (check_collide(frog_pos, map))
