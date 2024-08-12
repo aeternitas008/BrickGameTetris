@@ -193,6 +193,9 @@ void spawn(params_t *prms) {
     get_tetramino(prms->tetramino);
     print_board(prms->map, *prms->tetramino);
     prms->tetramino->type = (prms->tetramino->type + 1) % 7;
+    char num[10];
+    sprintf(num, "%d", prms->tetramino->type++);
+    MVPRINTW(10, BOARD_M + 4, num);    
     // tetramino_fell(prms->tetramino_pos);
     *prms->state = MOVING;
     // }

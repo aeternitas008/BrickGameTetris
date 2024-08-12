@@ -117,6 +117,20 @@ void print_tetramino(tetramino_t tetramino) {
   }
 }
 
+void print_next_tetr(tetramino_t tetramino) {
+
+  for (int x = 0; x < 4; x++) {
+    for (int y = 0; y < 4; y++) {
+      if (tetramino.figure[x][y]) {
+        MVPRINTW(15 + x, 34 + y * 3 + 2,
+                 "■");
+      } else {
+        CLEAR_BACKPOS(15 + x, 34 + y * 3 + 2);
+      }
+    }
+  }
+}
+
 void clear_tetramino(tetramino_t tetramino) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
