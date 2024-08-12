@@ -35,7 +35,7 @@
 #define BOARDS_BEGIN 2
 
 #define TETRSTART_X (0)
-#define TETRSTART_Y (0)
+#define TETRSTART_Y (4)
 #define INITIAL_TIMEOUT 150
 
 #define BOARD_N (ROWS_MAP + MAP_PADDING * 2)

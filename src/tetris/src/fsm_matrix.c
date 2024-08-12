@@ -152,11 +152,11 @@ void shifting(params_t *prms) {
 }
 
 void check(params_t *prms) {
-  if (check_collide(prms->tetramino->point, prms->map))
-    *prms->state = FELL;
-  else if (check_finish_state(prms->tetramino->point, prms->map))
-    *prms->state = REACH;
-  else
+  // if (check_collide(prms->tetramino->point, prms->map))
+  //   *prms->state = FELL;
+  // else if (check_finish_state(prms->tetramino->point, prms->map))
+  //   *prms->state = REACH;
+  // else
     *prms->state = SHIFTING;
 }
 
@@ -217,11 +217,12 @@ bool is_not_block_below(params_t *prms) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (prms->tetramino->figure[x][y] == 1 &&
-          (prms->tetramino->point->x + x >= 23 ||
-           prms->map->field[prms->tetramino->point->x + x + 1]
-                           [prms->tetramino->point->y + y] == 1)) {
+          (prms->tetramino->point->x + x > 22 )) {
         result = 0;
-      }
+      } else if (prms->tetramino->figure[x][y] == 1 &&
+      prms->map->field[prms->tetramino->point->x + x + 1]
+                        [prms->tetramino->point->y + y] == 1)
+                        result = 0;
     }
   }
   return result;
@@ -232,9 +233,7 @@ bool is_block_right(params_t *prms) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (prms->tetramino->figure[x][y] == 1 &&
-          (prms->tetramino->point->y + y >= 10 ||
-           prms->map->field[prms->tetramino->point->x + x]
-                           [prms->tetramino->point->y + y + 1] == 1)) {
+          (prms->tetramino->point->y + y >= 9)) {
         result = 0;
       }
     }

@@ -1,6 +1,6 @@
 #include "../inc/objects.h"
 #include "../inc/tetr_backend.h"
-
+#include <stdlib.h>
 void init_board(board_t *map) {
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
@@ -92,10 +92,10 @@ void stats_init(game_stats_t *stats) {
   if (fp != NULL) {
     fgets(buffer, N, fp);
     char *score = strchr(buffer, ':');
-    stats->high_score = *score++;
+    stats->high_score = atoi(score++);
     fgets(buffer, N, fp);
     char *level = strchr(buffer, ':');
-    stats->level = *level++;
+    stats->level = atoi(level++);
     fclose(fp);
   } else {
     FILE *file = fopen("meta.txt", "w");
