@@ -18,8 +18,8 @@ typedef struct {
   position *point;
   int type;
   int variant;
-  u_int8_t figure[4][4];
-  u_int8_t array_figures[19][4][4];
+  unsigned int figure[4][4];
+  unsigned int array_figures[19][4][4];
 } tetramino_t;
 
 typedef struct {

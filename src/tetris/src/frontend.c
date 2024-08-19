@@ -21,8 +21,8 @@ void print_overlay(void) {
   // init_pair(1, COLOR_CYAN, COLOR_BLACK);
   // init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
   // attron(COLOR_PAIR(1));
-  print_rectangle(0, BOARD_N + 1, 0, BOARD_M + 1);
-  print_rectangle(0, BOARD_N + 1, BOARD_M + 2, BOARD_M + HUD_WIDTH + 5);
+  print_rectangle(0, BOARD_N - 1, 0, BOARD_M + 1);
+  print_rectangle(0, BOARD_N - 1, BOARD_M + 2, BOARD_M + HUD_WIDTH + 5);
 
   for (int i = 1; i <= 4; i++) {
     int a = 0;
@@ -30,7 +30,7 @@ void print_overlay(void) {
     print_rectangle(i + (i - 1) * 3, i * 4 + a, BOARD_M + 3,
                     BOARD_M + HUD_WIDTH + 4);
   }
-  print_rectangle(23, 26, BOARD_M + 3, BOARD_M + HUD_WIDTH + 4);
+  print_rectangle(21, 24, BOARD_M + 3, BOARD_M + HUD_WIDTH + 4);
 
   MVPRINTW(2, BOARD_M + 5, "HIGH SCORE");
   MVPRINTW(3, BOARD_M + 8, "1927");
@@ -42,13 +42,13 @@ void print_overlay(void) {
   MVPRINTW(11, BOARD_M + 12, "0");
 
   MVPRINTW(14, BOARD_M + 8, "NEXT");
-  MVPRINTW(15, BOARD_M + 4, "[■][■][ ][■]");
-  MVPRINTW(16, BOARD_M + 4, "[■][■][■][■]");
-  MVPRINTW(17, BOARD_M + 4, "[ ][ ][ ][■]");
-  MVPRINTW(18, BOARD_M + 4, "[ ][ ][ ][■]");
+  // MVPRINTW(15, BOARD_M + 4, "[■][■][ ][■]");
+  // MVPRINTW(16, BOARD_M + 4, "[■][■][■][■]");
+  // MVPRINTW(17, BOARD_M + 4, "[ ][ ][ ][■]");
+  // MVPRINTW(18, BOARD_M + 4, "[ ][ ][ ][■]");
 
-  MVPRINTW(24, BOARD_M + 8, "TIME");
-  MVPRINTW(25, BOARD_M + 8, "12:50");
+  MVPRINTW(22, BOARD_M + 8, "TIME");
+  MVPRINTW(23, BOARD_M + 8, "12:50");
 
   // MVPRINTW(21, 1, "[■][■][■][■][■][■][■][■][■][■]");
   // MVPRINTW(22, 1, "[■][■][■][■][■][■][■][■][■][■]");
@@ -99,7 +99,7 @@ void print_stats(game_stats_t *stats) {
 }
 
 void print_field(board_t *game, position *tetramino_pos) {
-  for (int i = 4; i <= 23; i++) {
+  for (int i = 3; i <= 22; i++) {
     MVPRINTW(i, 1, "[ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]");
     refresh();
     napms(30);
@@ -110,8 +110,8 @@ void print_tetramino(tetramino_t tetramino) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
-        MVPRINTW(tetramino.point->x + x, tetramino.point->y * 3 + 2 + y * 3,
-                 "■");
+        MVPRINTW(3 + tetramino.point->x + x, tetramino.point->y * 3 + 2 + y * 3,
+                 "+");
       }
     }
   }
@@ -123,7 +123,7 @@ void print_next_tetr(tetramino_t tetramino) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
         MVPRINTW(15 + x, 34 + y * 3 + 2,
-                 "■");
+                 "+");
       } else {
         CLEAR_BACKPOS(15 + x, 34 + y * 3 + 2);
       }
@@ -135,7 +135,7 @@ void clear_tetramino(tetramino_t tetramino) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
-        CLEAR_BACKPOS(tetramino.point->x + x,
+        CLEAR_BACKPOS(3 + tetramino.point->x + x,
                       tetramino.point->y * 3 + 2 + y * 3);
       }
     }
@@ -146,7 +146,7 @@ void print_map(board_t map) {
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
       if (map.field[x][y] == 1) {
-        MVPRINTW(x + BOARDS_BEGIN + 2, y * 3 + 2, "■");
+        MVPRINTW(x + BOARDS_BEGIN + 2, y * 3 + 2, "+");
       } else {
         CLEAR_BACKPOS(x + BOARDS_BEGIN + 2, y * 3 + 2);
       }
@@ -154,9 +154,8 @@ void print_map(board_t map) {
   }
 }
 
-void print_board(board_t *map, tetramino_t tetramino) {
+void print_board(board_t *map) {
   print_map(*map);
-  print_tetramino(tetramino);
 }
 
 void print_cars(board_t *game) {

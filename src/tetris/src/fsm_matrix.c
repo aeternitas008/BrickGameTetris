@@ -1,5 +1,9 @@
 #include "../inc/fsm.h"
 #include "../inc/tetris.h"
+#include <time.h>
+#include <sys/time.h>
+// #define _POSIX_C_SOURCE 199309L
+#define CLOCK_REALTIME 0
 // This is a finite state machine realisation based on matrix of "actions".
 /*
     Function sigact() takes an action function from fsm_table.
@@ -11,6 +15,22 @@
    switch-case realisation. 2) Code is easy to read. 3) Flexible (easy to add
    new state) Cons: 1) More memory usage.
 */
+
+// struct timespec {
+//     time_t tv_sec;  /* seconds */
+//     long   tv_nsec; /* nanoseconds */
+// };
+
+int clock_gettime(int clk_id, struct timespec *tp) {
+    struct timeval now;
+    int rv = gettimeofday(&now, NULL);
+    
+    if (rv == 0) {
+        tp->tv_sec = now.tv_sec;
+        tp->tv_nsec = now.tv_usec * 1000; // Конвертируем микросекунды в наносекунды
+    }
+    return rv;
+}
 
 typedef void (*action)(params_t *prms);
 
@@ -31,7 +51,7 @@ void pause(params_t *prms);
 
 action fsm_table[7][10] = {
     {start, NULL, NULL, NULL, exitstate, start, NULL, NULL},
-    {spawn, spawn, spawn, spawn, spawn, spawn, spawn, NULL, NULL},
+    {spawn, spawn, spawn, spawn, spawn, spawn, spawn, spawn, spawn},
     {moveup, movedown, moveright, moveleft, exitstate, check, check, turn_right,
      pause},
     {shifting, shifting, shifting, shifting, shifting, shifting, shifting,
@@ -182,37 +202,24 @@ void start(params_t *prms) {
 }
 
 void spawn(params_t *prms) {
-  if (prms->stats->level > LEVEL_CNT)
-    *prms->state = GAMEOVER;
-  else {
-    // if (!lvlproc(prms->map, prms->stats))
-    // {
-    // fill_finish(prms->map->finish);
-    // print_finished(prms->map);
+  // if (prms->stats->level > LEVEL_CNT)
+  //   *prms->state = GAMEOVER;
+  // else {
     tetraminopos_init(prms->tetramino->point);
+    // (*prms).tetramino->type = (prms->tetramino->type + 1) % 7;  
     get_tetramino(prms->tetramino);
-    print_board(prms->map, *prms->tetramino);
-    prms->tetramino->type = (prms->tetramino->type + 1) % 7;
-    char num[10];
-    sprintf(num, "%d", prms->tetramino->type++);
-    MVPRINTW(10, BOARD_M + 4, num);    
+    print_board(prms->map);
+    print_tetramino(*prms->tetramino);
+    MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
+    // (*prms).tetramino->type = (prms->tetramino->type + 1) % 7;  
+    // MVPRINTW(8, 37, "%02d", (*prms).tetramino->type);
     // tetramino_fell(prms->tetramino_pos);
     *prms->state = MOVING;
-    // }
-    // MVPRINTW(3, BOARD_M + 8, "OK");
-    // else
-    //     *prms->state = FILE_ERROR_STATE;
-  }
+  // }
 }
 
 void moveup(params_t *prms) {
-  // if (prms->tetramino_pos->y != 1)
-  // {
-  //     CLEAR_BACKPOS(prms->tetramino_pos->y, prms->tetramino_pos->x);
-  //     prms->tetramino_pos->y -= 2;
-  // }
-
-  // check(prms);
+  //
 }
 
 bool is_not_block_below(params_t *prms) {
@@ -220,7 +227,7 @@ bool is_not_block_below(params_t *prms) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (prms->tetramino->figure[x][y] == 1 &&
-          (prms->tetramino->point->x + x > 22 )) {
+          (prms->tetramino->point->x + x >= 19 )) {
         result = 0;
       } else if (prms->tetramino->figure[x][y] == 1 &&
       prms->map->field[prms->tetramino->point->x + x + 1]
@@ -236,7 +243,9 @@ bool is_block_right(params_t *prms) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (prms->tetramino->figure[x][y] == 1 &&
-          (prms->tetramino->point->y + y >= 9)) {
+          (prms->tetramino->point->y + y >= 9 ||
+           prms->map->field[prms->tetramino->point->x + x]
+                           [prms->tetramino->point->y + y - 1] == 1)) {
         result = 0;
       }
     }
@@ -274,6 +283,7 @@ void movedown(params_t *prms) {
   if (is_not_block_below(prms)) {
     clear_tetramino(*prms->tetramino);
     prms->tetramino->point->x += 1;
+    MVPRINTW(9, 33, "%02d %02d %02d", prms->tetramino->point->x, prms->tetramino->point->y, (*prms).tetramino->type);
     print_tetramino(*prms->tetramino);
     refresh();
   } else {

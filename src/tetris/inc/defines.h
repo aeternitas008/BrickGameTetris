@@ -34,7 +34,7 @@
 
 #define BOARDS_BEGIN 2
 
-#define TETRSTART_X (0)
+#define TETRSTART_X (-1)
 #define TETRSTART_Y (4)
 #define INITIAL_TIMEOUT 150
 
@@ -58,6 +58,8 @@
 #define P_KEY 112
 #define P_KEY_SMALL 80
 
-#define MY_BLOCK = "▢";
+// #define MY_BLOCK = "▢";
+// #define MY_BLOCK = "■";
+#define MY_BLOCK = "+";
 
 #endif

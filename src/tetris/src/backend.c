@@ -92,10 +92,10 @@ void stats_init(game_stats_t *stats) {
   if (fp != NULL) {
     fgets(buffer, N, fp);
     char *score = strchr(buffer, ':');
-    stats->high_score = atoi(score++);
+    stats->high_score = atoi(++score);
     fgets(buffer, N, fp);
     char *level = strchr(buffer, ':');
-    stats->level = atoi(level++);
+    stats->level = atoi(++level);
     fclose(fp);
   } else {
     FILE *file = fopen("meta.txt", "w");
@@ -105,10 +105,10 @@ void stats_init(game_stats_t *stats) {
     stats->level = 1;
   }
   sprintf(buffer, "%04d", stats->high_score);
-  MVPRINTW(3, BOARD_M + 8, buffer);
+  MVPRINTW(3, BOARD_M + 8, "%s", buffer);
   sprintf(buffer, "%d", stats->level);
-  MVPRINTW(11, BOARD_M + 12, buffer);
-  MVPRINTW(25, BOARD_M + 8, stats->current_time);
+  MVPRINTW(11, BOARD_M + 12, "%s", buffer);
+  MVPRINTW(23, BOARD_M + 8, "%s", stats->current_time);
   stats->speed = 1;
   stats->score = 0;
   stats->won = FALSE;

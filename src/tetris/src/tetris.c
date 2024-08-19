@@ -1,4 +1,9 @@
 #include "../inc/tetris.h"
+// #define _POSIX_C_SOURCE 199309L
+// struct timeval {
+//    time_t      tv_sec;   // Number of whole seconds of elapsed time
+//    long int    tv_usec;  // Number of microseconds of rest of elapsed time minus tv_sec. Always less than one million
+// };
 
 void get_tetramino(tetramino_t *tetramino) {
   int key = 0;
@@ -20,11 +25,12 @@ void get_tetramino(tetramino_t *tetramino) {
       tetramino->figure[x][y] = tetramino->array_figures[key][x][y];
     }
   }
+  tetramino->type = (tetramino->type + 1) % 7;
 }
 
-void get_array_figures(u_int8_t origin[19][4][4]) {
+void get_array_figures(unsigned int  origin[19][4][4]) {
   printf("Inside get_matrix\n");
-  u_int8_t matrix[19][4][4] = {
+  unsigned int  matrix[19][4][4] = {
       {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}},
 
       {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
@@ -97,7 +103,8 @@ void game_loop() {
   tetramino.variant = 0;
   tetramino.type = 0;
   get_array_figures(tetramino.array_figures);
-  get_tetramino(&tetramino);
+  // get_tetramino(&tetramino);
+  *stats.current_time = '\0';
   stats_init(&stats);
   // get_matrix(tetramino.array_figures);
 
