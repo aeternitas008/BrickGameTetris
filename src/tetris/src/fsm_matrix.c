@@ -80,6 +80,14 @@ typedef enum {
   T,
 } tetramino_state_t;
 
+void print_next_tetramino(params_t *prms) {
+  prms->tetramino->type++;
+  get_tetramino(prms->tetramino);
+  print_next_tetr(*prms->tetramino);
+  prms->tetramino->type--;
+  get_tetramino(prms->tetramino);
+}
+
 void get_next_tetramino(params_t *prms) {
   prms->tetramino->type++;
   get_tetramino(prms->tetramino);
@@ -89,20 +97,19 @@ void get_next_tetramino(params_t *prms) {
 //   {}
 // }
 
-void sigact(signals sig, state_t *state, game_stats_t *stats, board_t *map,
-            tetramino_t *tetramino, struct timespec *time) {
+void sigact(signals sig, state_t *state, params_t *prms) {
   action act = NULL;
-  params_t prms;
-  prms.stats = stats;
-  prms.state = state;
-  prms.map = map;
-  prms.tetramino = tetramino;
-  prms.time = time;
+  // params_t prms;
+  // prms.stats = stats;
+  // prms.state = state;
+  // prms.map = map;
+  // prms.tetramino = map->tetramino;
+  // prms.time = time;
   // prms.time =
   // if (*state != FILE_ERROR_STATE)
   act = fsm_table[*state][sig];
 
-  if (act) act(&prms);
+  if (act) act(prms);
 }
 
 signals get_signal(int user_input) {
@@ -120,12 +127,10 @@ signals get_signal(int user_input) {
     rc = ESCAPE_BTN;
   else if (user_input == ENTER_KEY)
     rc = ENTER_BTN;
-  else if (user_input == SPACE_KEY)
+  else if (user_input == ' ')
     rc = SPACE_BTN;
   else if (user_input == P_KEY_SMALL || user_input == P_KEY)
     rc = P_BTN;
-  else if (user_input == R_KEY)
-    rc = R_BTN;
   mvprintw(7, 40, "%03d %03d", user_input, rc);
   return rc;
 }
@@ -171,15 +176,53 @@ void shifting(params_t *prms) {
   // MVPRINTW(3, BOARD_M + 8, "OK");
 }
 
+int has_full_line(board_t map, int *line) {
+  int checker = 0;
+  *line = 0;
+  for (int x = 0; x < 20 && checker < 10; x++) {
+        checker = 0;
+    for (int y = 0; y < 10; y++) {
+      if (map.field[x][y] == 1) {
+        checker += 1;
+    }
+  }
+    if (checker == 10) *line = x;
+  }
+  return *line;
+}
+
+void check_lines(int *count, params_t *prms) {
+  int line = 0;
+  while (has_full_line(*prms->map, &line)) {
+    (*count)++;
+    for (int k = line; k > 0; k--) {
+      for (int y = 0; y < 10; y++) {
+        prms->map->field[k][y] = prms->map->field[k-1][y];
+      }
+    }
+  }
+}
+
 void check(params_t *prms) {
   // if (check_collide(prms->tetramino->point, prms->map))
   //   *prms->state = FELL;
   // else if (check_finish_state(prms->tetramino->point, prms->map))
   //   *prms->state = REACH;
   // else
+    int count = 0;
+    check_lines(&count, prms);
+    if (count == 1) prms->stats->score += 100;
+    if (count == 2) prms->stats->score += 300;
+    if (count == 3) prms->stats->score += 700;
+    if (count == 4) prms->stats->score += 1500;
+    new_stats_init(prms->stats);
+    refresh();
+    if (*prms->state == SPAWN) {
+    *prms->state = SPAWN;
+    } else {
     *prms->state = SHIFTING;
+  }
 }
-
 // void tetramino_fell(tetramino_pos *tetramino_pos) {
 //   while (tetramino_pos->x <= 22) {
 //     MVPRINTW(tetramino_pos->x++, tetramino_pos->y, " ");
@@ -206,11 +249,22 @@ void spawn(params_t *prms) {
   //   *prms->state = GAMEOVER;
   // else {
     tetraminopos_init(prms->tetramino->point);
-    // (*prms).tetramino->type = (prms->tetramino->type + 1) % 7;  
     get_tetramino(prms->tetramino);
     print_board(prms->map);
     print_tetramino(*prms->tetramino);
+    print_next_tetramino(prms);
+    // get_next_tetramino(prms);
     MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
+    int sum = 0;
+    for (int i = 0; i < 20; i++) {
+      for (int j = 0; j < 10; j++) {
+        if (prms->map->field[i][j] == 1) {
+          sum++;
+        }
+      }
+    }
+    MVPRINTW(34, 20, "%d", sum);
+    // MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
     // (*prms).tetramino->type = (prms->tetramino->type + 1) % 7;  
     // MVPRINTW(8, 37, "%02d", (*prms).tetramino->type);
     // tetramino_fell(prms->tetramino_pos);
@@ -289,8 +343,9 @@ void movedown(params_t *prms) {
   } else {
     add_tetramino_on_board(prms);
     tetraminopos_init(prms->tetramino->point);
+    prms->tetramino->type = (prms->tetramino->type + 1) % 7;
     *prms->state = SPAWN;
-  }
+  } 
   check(prms);
 }
 
@@ -310,7 +365,7 @@ void moveleft(params_t *prms) {
     prms->tetramino->point->y -= 1;
     print_tetramino(*prms->tetramino);
     refresh();
-  }
+  } 
 
   check(prms);
 }
@@ -327,7 +382,11 @@ void moveleft(params_t *prms) {
 // }
 
 void turn_right(params_t *prms) {
-  {}
+  prms->tetramino->variant = (prms->tetramino->variant + 1) % 4;
+  clear_tetramino(*prms->tetramino);
+  get_tetramino(prms->tetramino);
+  print_tetramino(*prms->tetramino);
+  *prms->state = MOVING; 
 }
 
 void pause(params_t *prms) {

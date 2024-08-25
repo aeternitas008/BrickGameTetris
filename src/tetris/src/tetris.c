@@ -25,7 +25,6 @@ void get_tetramino(tetramino_t *tetramino) {
       tetramino->figure[x][y] = tetramino->array_figures[key][x][y];
     }
   }
-  tetramino->type = (tetramino->type + 1) % 7;
 }
 
 void get_array_figures(unsigned int  origin[19][4][4]) {
@@ -103,16 +102,26 @@ void game_loop() {
   tetramino.variant = 0;
   tetramino.type = 0;
   get_array_figures(tetramino.array_figures);
+  map.tetramino = &tetramino;
   // get_tetramino(&tetramino);
   *stats.current_time = '\0';
   stats_init(&stats);
+  params_t prms;
+  prms.stats = &stats;
+  prms.state = &state;
+  prms.map = &map;
+  prms.tetramino = &tetramino;
+  prms.time = &time;
+  
   // get_matrix(tetramino.array_figures);
 
   while (no_break) {
     if (state == GAMEOVER || state == EXIT_STATE) no_break = FALSE;
-
-    sigact(get_signal(signal), &state, &stats, &map, &tetramino, &time);
-
+    
+    sigact(get_signal(signal), &state, &prms);
+    // if (state == SPAWN) {
+    //   *tetramino.type = tetramino.type + 1;
+    // }
     if (state == MOVING || state == START) signal = GET_USER_INPUT;
   }
 

@@ -42,10 +42,10 @@ void print_overlay(void) {
   MVPRINTW(11, BOARD_M + 12, "0");
 
   MVPRINTW(14, BOARD_M + 8, "NEXT");
-  // MVPRINTW(15, BOARD_M + 4, "[■][■][ ][■]");
-  // MVPRINTW(16, BOARD_M + 4, "[■][■][■][■]");
-  // MVPRINTW(17, BOARD_M + 4, "[ ][ ][ ][■]");
-  // MVPRINTW(18, BOARD_M + 4, "[ ][ ][ ][■]");
+  MVPRINTW(15, BOARD_M + 4, "[ ][ ][ ][ ]");
+  MVPRINTW(16, BOARD_M + 4, "[ ][ ][ ][ ]");
+  MVPRINTW(17, BOARD_M + 4, "[ ][ ][ ][ ]");
+  MVPRINTW(18, BOARD_M + 4, "[ ][ ][ ][ ]");
 
   MVPRINTW(22, BOARD_M + 8, "TIME");
   MVPRINTW(23, BOARD_M + 8, "12:50");
@@ -122,10 +122,10 @@ void print_next_tetr(tetramino_t tetramino) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
-        MVPRINTW(15 + x, 34 + y * 3 + 2,
+        MVPRINTW(15 + x, 33 + y * 3 + 2,
                  "+");
       } else {
-        CLEAR_BACKPOS(15 + x, 34 + y * 3 + 2);
+        CLEAR_BACKPOS(15 + x, 33 + y * 3 + 2);
       }
     }
   }
@@ -146,9 +146,9 @@ void print_map(board_t map) {
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
       if (map.field[x][y] == 1) {
-        MVPRINTW(x + BOARDS_BEGIN + 2, y * 3 + 2, "+");
+        MVPRINTW(x + BOARDS_BEGIN + 1, y * 3 + 2, "+");
       } else {
-        CLEAR_BACKPOS(x + BOARDS_BEGIN + 2, y * 3 + 2);
+        CLEAR_BACKPOS(x + BOARDS_BEGIN + 1, y * 3 + 2);
       }
     }
   }

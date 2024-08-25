@@ -30,7 +30,6 @@ typedef enum {
   NOSIG,
   SPACE_BTN,
   P_BTN,
-  R_BTN
 } signals;
 
 typedef struct game_params {
@@ -43,6 +42,5 @@ typedef struct game_params {
 } params_t;
 
 signals get_signal(int user_input);
-void sigact(signals sig, state_t *state, game_stats_t *stats, board_t *map,
-            tetramino_t *tetramino, struct timespec *time);
+void sigact(signals sig, state_t *state, params_t *prms);
 #endif

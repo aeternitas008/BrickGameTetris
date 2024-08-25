@@ -20,4 +20,6 @@ int read_banner(game_stats_t *stats, banner_t *banner);
 void print_tetramino(tetramino_t tetramino);
 void clear_tetramino(tetramino_t tetramino);
 
+void print_next_tetr(tetramino_t tetramino);
+
 #endif
