@@ -2,7 +2,8 @@
 // #define _POSIX_C_SOURCE 199309L
 // struct timeval {
 //    time_t      tv_sec;   // Number of whole seconds of elapsed time
-//    long int    tv_usec;  // Number of microseconds of rest of elapsed time minus tv_sec. Always less than one million
+//    long int    tv_usec;  // Number of microseconds of rest of elapsed time
+//    minus tv_sec. Always less than one million
 // };
 
 void get_tetramino(tetramino_t *tetramino) {
@@ -27,9 +28,9 @@ void get_tetramino(tetramino_t *tetramino) {
   }
 }
 
-void get_array_figures(unsigned int  origin[19][4][4]) {
+void get_array_figures(unsigned int origin[19][4][4]) {
   printf("Inside get_matrix\n");
-  unsigned int  matrix[19][4][4] = {
+  unsigned int matrix[19][4][4] = {
       {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}},
 
       {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
@@ -112,12 +113,12 @@ void game_loop() {
   prms.map = &map;
   prms.tetramino = &tetramino;
   prms.time = &time;
-  
+
   // get_matrix(tetramino.array_figures);
 
   while (no_break) {
     if (state == GAMEOVER || state == EXIT_STATE) no_break = FALSE;
-    
+
     sigact(get_signal(signal), &state, &prms);
     // if (state == SPAWN) {
     //   *tetramino.type = tetramino.type + 1;

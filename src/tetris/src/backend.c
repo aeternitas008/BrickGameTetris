@@ -1,6 +1,7 @@
+#include <stdlib.h>
+
 #include "../inc/objects.h"
 #include "../inc/tetr_backend.h"
-#include <stdlib.h>
 void init_board(board_t *map) {
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
@@ -132,13 +133,13 @@ void new_stats_init(game_stats_t *stats) {
     FILE *file = fopen(fname, "w");
     fprintf(file, "score:%d\nlevel:%d", stats->score, stats->level);
     fclose(file);
-  }    
-    sprintf(buffer, "%04d", stats->high_score);
-    MVPRINTW(3, BOARD_M + 8, "%s", buffer);
-    // stats->high_score = 0;
-    // stats->level = 1;
+  }
+  sprintf(buffer, "%04d", stats->high_score);
+  MVPRINTW(3, BOARD_M + 8, "%s", buffer);
+  // stats->high_score = 0;
+  // stats->level = 1;
   // }
-  
+
   sprintf(buffer, "%04d", stats->high_score);
   MVPRINTW(3, BOARD_M + 8, "%s", buffer);
   // sprintf(buffer, "%d", stats->level);

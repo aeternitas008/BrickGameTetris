@@ -118,12 +118,10 @@ void print_tetramino(tetramino_t tetramino) {
 }
 
 void print_next_tetr(tetramino_t tetramino) {
-
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
-        MVPRINTW(15 + x, 33 + y * 3 + 2,
-                 "+");
+        MVPRINTW(15 + x, 33 + y * 3 + 2, "+");
       } else {
         CLEAR_BACKPOS(15 + x, 33 + y * 3 + 2);
       }
@@ -154,9 +152,7 @@ void print_map(board_t map) {
   }
 }
 
-void print_board(board_t *map) {
-  print_map(*map);
-}
+void print_board(board_t *map) { print_map(*map); }
 
 void print_cars(board_t *game) {
   for (int i = MAP_PADDING + 1; i < BOARD_N - MAP_PADDING + 1; i++) {

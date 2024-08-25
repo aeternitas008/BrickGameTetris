@@ -1,7 +1,8 @@
+#include <sys/time.h>
+#include <time.h>
+
 #include "../inc/fsm.h"
 #include "../inc/tetris.h"
-#include <time.h>
-#include <sys/time.h>
 // #define _POSIX_C_SOURCE 199309L
 #define CLOCK_REALTIME 0
 // This is a finite state machine realisation based on matrix of "actions".
@@ -22,14 +23,15 @@
 // };
 
 int clock_gettime(int clk_id, struct timespec *tp) {
-    struct timeval now;
-    int rv = gettimeofday(&now, NULL);
-    
-    if (rv == 0) {
-        tp->tv_sec = now.tv_sec;
-        tp->tv_nsec = now.tv_usec * 1000; // Конвертируем микросекунды в наносекунды
-    }
-    return rv;
+  struct timeval now;
+  int rv = gettimeofday(&now, NULL);
+
+  if (rv == 0) {
+    tp->tv_sec = now.tv_sec;
+    tp->tv_nsec =
+        now.tv_usec * 1000;  // Конвертируем микросекунды в наносекунды
+  }
+  return rv;
 }
 
 typedef void (*action)(params_t *prms);
@@ -180,12 +182,12 @@ int has_full_line(board_t map, int *line) {
   int checker = 0;
   *line = 0;
   for (int x = 0; x < 20 && checker < 10; x++) {
-        checker = 0;
+    checker = 0;
     for (int y = 0; y < 10; y++) {
       if (map.field[x][y] == 1) {
         checker += 1;
+      }
     }
-  }
     if (checker == 10) *line = x;
   }
   return *line;
@@ -197,7 +199,7 @@ void check_lines(int *count, params_t *prms) {
     (*count)++;
     for (int k = line; k > 0; k--) {
       for (int y = 0; y < 10; y++) {
-        prms->map->field[k][y] = prms->map->field[k-1][y];
+        prms->map->field[k][y] = prms->map->field[k - 1][y];
       }
     }
   }
@@ -209,17 +211,17 @@ void check(params_t *prms) {
   // else if (check_finish_state(prms->tetramino->point, prms->map))
   //   *prms->state = REACH;
   // else
-    int count = 0;
-    check_lines(&count, prms);
-    if (count == 1) prms->stats->score += 100;
-    if (count == 2) prms->stats->score += 300;
-    if (count == 3) prms->stats->score += 700;
-    if (count == 4) prms->stats->score += 1500;
-    new_stats_init(prms->stats);
-    refresh();
-    if (*prms->state == SPAWN) {
+  int count = 0;
+  check_lines(&count, prms);
+  if (count == 1) prms->stats->score += 100;
+  if (count == 2) prms->stats->score += 300;
+  if (count == 3) prms->stats->score += 700;
+  if (count == 4) prms->stats->score += 1500;
+  new_stats_init(prms->stats);
+  refresh();
+  if (*prms->state == SPAWN) {
     *prms->state = SPAWN;
-    } else {
+  } else {
     *prms->state = SHIFTING;
   }
 }
@@ -248,27 +250,27 @@ void spawn(params_t *prms) {
   // if (prms->stats->level > LEVEL_CNT)
   //   *prms->state = GAMEOVER;
   // else {
-    tetraminopos_init(prms->tetramino->point);
-    get_tetramino(prms->tetramino);
-    print_board(prms->map);
-    print_tetramino(*prms->tetramino);
-    print_next_tetramino(prms);
-    // get_next_tetramino(prms);
-    MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
-    int sum = 0;
-    for (int i = 0; i < 20; i++) {
-      for (int j = 0; j < 10; j++) {
-        if (prms->map->field[i][j] == 1) {
-          sum++;
-        }
+  tetraminopos_init(prms->tetramino->point);
+  get_tetramino(prms->tetramino);
+  print_board(prms->map);
+  print_tetramino(*prms->tetramino);
+  print_next_tetramino(prms);
+  // get_next_tetramino(prms);
+  MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
+  int sum = 0;
+  for (int i = 0; i < 20; i++) {
+    for (int j = 0; j < 10; j++) {
+      if (prms->map->field[i][j] == 1) {
+        sum++;
       }
     }
-    MVPRINTW(34, 20, "%d", sum);
-    // MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
-    // (*prms).tetramino->type = (prms->tetramino->type + 1) % 7;  
-    // MVPRINTW(8, 37, "%02d", (*prms).tetramino->type);
-    // tetramino_fell(prms->tetramino_pos);
-    *prms->state = MOVING;
+  }
+  MVPRINTW(34, 20, "%d", sum);
+  // MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
+  // (*prms).tetramino->type = (prms->tetramino->type + 1) % 7;
+  // MVPRINTW(8, 37, "%02d", (*prms).tetramino->type);
+  // tetramino_fell(prms->tetramino_pos);
+  *prms->state = MOVING;
   // }
 }
 
@@ -281,12 +283,12 @@ bool is_not_block_below(params_t *prms) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (prms->tetramino->figure[x][y] == 1 &&
-          (prms->tetramino->point->x + x >= 19 )) {
+          (prms->tetramino->point->x + x >= 19)) {
         result = 0;
       } else if (prms->tetramino->figure[x][y] == 1 &&
-      prms->map->field[prms->tetramino->point->x + x + 1]
-                        [prms->tetramino->point->y + y] == 1)
-                        result = 0;
+                 prms->map->field[prms->tetramino->point->x + x + 1]
+                                 [prms->tetramino->point->y + y] == 1)
+        result = 0;
     }
   }
   return result;
@@ -337,7 +339,8 @@ void movedown(params_t *prms) {
   if (is_not_block_below(prms)) {
     clear_tetramino(*prms->tetramino);
     prms->tetramino->point->x += 1;
-    MVPRINTW(9, 33, "%02d %02d %02d", prms->tetramino->point->x, prms->tetramino->point->y, (*prms).tetramino->type);
+    MVPRINTW(9, 33, "%02d %02d %02d", prms->tetramino->point->x,
+             prms->tetramino->point->y, (*prms).tetramino->type);
     print_tetramino(*prms->tetramino);
     refresh();
   } else {
@@ -345,7 +348,7 @@ void movedown(params_t *prms) {
     tetraminopos_init(prms->tetramino->point);
     prms->tetramino->type = (prms->tetramino->type + 1) % 7;
     *prms->state = SPAWN;
-  } 
+  }
   check(prms);
 }
 
@@ -365,7 +368,7 @@ void moveleft(params_t *prms) {
     prms->tetramino->point->y -= 1;
     print_tetramino(*prms->tetramino);
     refresh();
-  } 
+  }
 
   check(prms);
 }
@@ -386,7 +389,7 @@ void turn_right(params_t *prms) {
   clear_tetramino(*prms->tetramino);
   get_tetramino(prms->tetramino);
   print_tetramino(*prms->tetramino);
-  *prms->state = MOVING; 
+  *prms->state = MOVING;
 }
 
 void pause(params_t *prms) {
