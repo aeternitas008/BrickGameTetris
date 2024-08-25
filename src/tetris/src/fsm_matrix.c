@@ -155,7 +155,7 @@ void shifting(params_t *prms) {
   int hours = ((long int)prms->time->tv_sec / 3600) % 24 + 3;
   int minutes = (long int)prms->time->tv_sec % 3600 / 60;
   sprintf(prms->stats->current_time, "%02d:%02d", hours, minutes);
-  stats_init(prms->stats);
+  // stats_init(prms->stats);
   // if (check_collide(prms->tetramino_pos, prms->map))
   //     *prms->state = FELL;
   // else
@@ -241,6 +241,7 @@ void start(params_t *prms) {
   // MVPRINTW(3, BOARD_M + 8, "OK");
   tetraminopos_init(prms->tetramino->point);
   clock_gettime(CLOCK_REALTIME, prms->time);
+  stats_init(prms->stats);
   // print_board(prms->map, prms->tetramino_pos);
   *prms->state = SPAWN;
   // }

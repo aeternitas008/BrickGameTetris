@@ -33,10 +33,10 @@ void print_overlay(void) {
   print_rectangle(21, 24, BOARD_M + 3, BOARD_M + HUD_WIDTH + 4);
 
   MVPRINTW(2, BOARD_M + 5, "HIGH SCORE");
-  MVPRINTW(3, BOARD_M + 8, "1927");
+  MVPRINTW(3, BOARD_M + 7, "01111");
 
   MVPRINTW(6, BOARD_M + 8, "SCORE");
-  MVPRINTW(7, BOARD_M + 8, "00000");
+  MVPRINTW(7, BOARD_M + 7, "00000");
 
   MVPRINTW(10, BOARD_M + 8, "LEVEL");
   MVPRINTW(11, BOARD_M + 12, "0");

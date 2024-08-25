@@ -105,8 +105,8 @@ void stats_init(game_stats_t *stats) {
     stats->high_score = 0;
     stats->level = 1;
   }
-  sprintf(buffer, "%04d", stats->high_score);
-  MVPRINTW(3, BOARD_M + 8, "%s", buffer);
+  sprintf(buffer, "%05d", stats->high_score);
+  MVPRINTW(3, BOARD_M + 7, "%s", buffer);
   sprintf(buffer, "%d", stats->level);
   MVPRINTW(11, BOARD_M + 12, "%s", buffer);
   MVPRINTW(23, BOARD_M + 8, "%s", stats->current_time);
@@ -116,8 +116,8 @@ void stats_init(game_stats_t *stats) {
 }
 void new_stats_init(game_stats_t *stats) {
   char *fname = "meta.txt";
-  int N = 256;
-  char buffer[N];
+  // int N = 256;
+  // char buffer[N];
   // FILE *fp = fopen(fname, "r");
   // if (fp != NULL) {
   //   fgets(buffer, N, fp);
@@ -134,14 +134,15 @@ void new_stats_init(game_stats_t *stats) {
     fprintf(file, "score:%d\nlevel:%d", stats->score, stats->level);
     fclose(file);
   }
-  sprintf(buffer, "%04d", stats->high_score);
-  MVPRINTW(3, BOARD_M + 8, "%s", buffer);
+  // sprintf(buffer, "%04d", stats->high_score);
+  MVPRINTW(3, BOARD_M + 7, "%05d", stats->high_score);
+  MVPRINTW(7, BOARD_M + 7, "%05d", stats->score);
   // stats->high_score = 0;
   // stats->level = 1;
   // }
 
-  sprintf(buffer, "%04d", stats->high_score);
-  MVPRINTW(3, BOARD_M + 8, "%s", buffer);
+  // sprintf(buffer, "%04d", stats->high_score);
+  // MVPRINTW(3, BOARD_M + 8, "%s", buffer);
   // sprintf(buffer, "%d", stats->level);
   // MVPRINTW(11, BOARD_M + 12, "%s", buffer);
   // MVPRINTW(23, BOARD_M + 8, "%s", stats->current_time);
