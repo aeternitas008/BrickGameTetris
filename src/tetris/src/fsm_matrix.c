@@ -3,6 +3,8 @@
 
 #include "../inc/fsm.h"
 #include "../inc/tetris.h"
+
+#include <math.h>
 // #define _POSIX_C_SOURCE 199309L
 #define CLOCK_REALTIME 0
 // This is a finite state machine realisation based on matrix of "actions".
@@ -141,12 +143,12 @@ void set_high_score() {}
 
 void save_high_score() {}
 
-double offset(params_t *prms, struct timespec *current_time) {
-  double seconds = (double)(current_time->tv_sec - (*prms).time->tv_sec);
-  double nanoseconds =
-      (double)(current_time->tv_nsec - (*prms).time->tv_nsec) / 1e9;
-  double total_offset = seconds + nanoseconds;
-  MVPRINTW(6, 40, "%lf", seconds);
+int offset(params_t *prms, struct timespec *current_time) {
+  int seconds = (current_time->tv_sec - (*prms).time->tv_sec) * 1000 ;
+  int nanoseconds =
+      (current_time->tv_nsec - (*prms).time->tv_nsec) / 1e6;
+  int total_offset = seconds + nanoseconds;
+  // MVPRINTW(6, 40, "%d", seconds);
   return total_offset;
 }
 
@@ -162,8 +164,10 @@ void shifting(params_t *prms) {
   // {
   struct timespec current_time;
   clock_gettime(CLOCK_REALTIME, &current_time);
-
-  if (offset(prms, &current_time) >= 1) {
+  int base_delay = 1000;
+  int diff = base_delay*pow(0.9, prms->stats->level - 1);
+  // MVPRINTW(30,20, "%d", diff);
+  if (offset(prms, &current_time) >= diff) {
     movedown(prms);
     (*prms).time->tv_sec = current_time.tv_sec;
     (*prms).time->tv_nsec = current_time.tv_nsec;
@@ -217,6 +221,8 @@ void check(params_t *prms) {
   if (count == 2) prms->stats->score += 300;
   if (count == 3) prms->stats->score += 700;
   if (count == 4) prms->stats->score += 1500;
+  if (prms->stats->level < 10)
+    prms->stats->level = prms->stats->score / 600 + 1;
   new_stats_init(prms->stats);
   refresh();
   if (*prms->state == SPAWN) {
@@ -252,6 +258,7 @@ void spawn(params_t *prms) {
   //   *prms->state = GAMEOVER;
   // else {
   tetraminopos_init(prms->tetramino->point);
+  prms->tetramino->variant = 0;
   get_tetramino(prms->tetramino);
   print_board(prms->map);
   print_tetramino(*prms->tetramino);
@@ -260,7 +267,7 @@ void spawn(params_t *prms) {
   MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
   int sum = 0;
   for (int i = 0; i < 20; i++) {
-    for (int j = 0; j < 10; j++) {
+    for (int j = 0; j < 10; j++) { 
       if (prms->map->field[i][j] == 1) {
         sum++;
       }

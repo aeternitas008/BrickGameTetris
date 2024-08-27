@@ -137,6 +137,7 @@ void new_stats_init(game_stats_t *stats) {
   // sprintf(buffer, "%04d", stats->high_score);
   MVPRINTW(3, BOARD_M + 7, "%05d", stats->high_score);
   MVPRINTW(7, BOARD_M + 7, "%05d", stats->score);
+  MVPRINTW(11, BOARD_M + 8, "%05d", stats->level);
   // stats->high_score = 0;
   // stats->level = 1;
   // }
