@@ -105,10 +105,9 @@ void stats_init(game_stats_t *stats) {
     stats->high_score = 0;
     stats->level = 1;
   }
-  sprintf(buffer, "%05d", stats->high_score);
-  MVPRINTW(3, BOARD_M + 7, "%s", buffer);
-  sprintf(buffer, "%d", stats->level);
-  MVPRINTW(11, BOARD_M + 12, "%s", buffer);
+  stats->level = 1;
+  MVPRINTW(3, BOARD_M + 8, "%05d", stats->high_score);
+  MVPRINTW(11, BOARD_M + 11, "%02d", stats->level);
   MVPRINTW(23, BOARD_M + 8, "%s", stats->current_time);
   stats->speed = 1;
   stats->score = 0;
@@ -134,22 +133,9 @@ void new_stats_init(game_stats_t *stats) {
     fprintf(file, "score:%d\nlevel:%d", stats->score, stats->level);
     fclose(file);
   }
-  // sprintf(buffer, "%04d", stats->high_score);
-  MVPRINTW(3, BOARD_M + 7, "%05d", stats->high_score);
-  MVPRINTW(7, BOARD_M + 7, "%05d", stats->score);
-  MVPRINTW(11, BOARD_M + 8, "%05d", stats->level);
-  // stats->high_score = 0;
-  // stats->level = 1;
-  // }
-
-  // sprintf(buffer, "%04d", stats->high_score);
-  // MVPRINTW(3, BOARD_M + 8, "%s", buffer);
-  // sprintf(buffer, "%d", stats->level);
-  // MVPRINTW(11, BOARD_M + 12, "%s", buffer);
-  // MVPRINTW(23, BOARD_M + 8, "%s", stats->current_time);
-  // stats->speed = 1;
-  // stats->score = 0;
-  // stats->won = FALSE;
+  MVPRINTW(3, BOARD_M + 8, "%05d", stats->high_score);
+  MVPRINTW(7, BOARD_M + 8, "%05d", stats->score);
+  MVPRINTW(11, BOARD_M + 11, "%02d", stats->level);
 }
 
 void shift_map(board_t *map) {

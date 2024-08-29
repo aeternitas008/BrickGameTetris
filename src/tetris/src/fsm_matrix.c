@@ -53,7 +53,7 @@ void check(params_t *prms);
 void turn_right(params_t *prms);
 void pause(params_t *prms);
 
-action fsm_table[7][10] = {
+action fsm_table[8][10] = {
     {start, NULL, NULL, NULL, exitstate, start, NULL, NULL},
     {spawn, spawn, spawn, spawn, spawn, spawn, spawn, spawn, spawn},
     {moveup, movedown, moveright, moveleft, exitstate, check, check, turn_right,
@@ -61,8 +61,9 @@ action fsm_table[7][10] = {
     {shifting, shifting, shifting, shifting, shifting, shifting, shifting,
      turn_right, pause},
     {reach, reach, reach, reach, reach, reach, reach},
+    {reach, reach, reach, reach, reach, reach, reach},
     // {collide, collide, collide, collide, collide, collide, collide},
-    {gameover, gameover, gameover, gameover, gameover, gameover, gameover},
+    {gameover, gameover, gameover, gameover, gameover, gameover, gameover, gameover, gameover},
     {exitstate, exitstate, exitstate, exitstate, exitstate, exitstate,
      exitstate}};
 
@@ -165,15 +166,17 @@ void shifting(params_t *prms) {
   struct timespec current_time;
   clock_gettime(CLOCK_REALTIME, &current_time);
   int base_delay = 1000;
-  int diff = base_delay*pow(0.9, prms->stats->level - 1);
+  int diff = base_delay*pow(0.8, prms->stats->level - 1);
   // MVPRINTW(30,20, "%d", diff);
   if (offset(prms, &current_time) >= diff) {
     movedown(prms);
     (*prms).time->tv_sec = current_time.tv_sec;
     (*prms).time->tv_nsec = current_time.tv_nsec;
   }
-
-  *prms->state = MOVING;
+  
+  if (*prms->state != SPAWN) {
+    *prms->state = MOVING;
+  }
 
   // print_board(prms->map, prms->tetramino_pos);
   // print_stats(prms->stats);
@@ -225,9 +228,8 @@ void check(params_t *prms) {
     prms->stats->level = prms->stats->score / 600 + 1;
   new_stats_init(prms->stats);
   refresh();
-  if (*prms->state == SPAWN) {
-    *prms->state = SPAWN;
-  } else {
+  
+  if (*prms->state != SPAWN) {
     *prms->state = SHIFTING;
   }
 }
@@ -253,33 +255,42 @@ void start(params_t *prms) {
   // }
 }
 
+
+int check_tetramino(params_t prms, tetramino_t tetramino) {
+  int result = 0;
+  for(int x = 0; x < 4 && result == 0; x++) {
+    for(int y = 0; y < 4 && result == 0; y++) {
+      if (tetramino.figure[x][y] == 1 &&
+          (tetramino.point->y + y > 9 
+          || tetramino.point->y + y < 0 
+          || tetramino.point->x + x < 0
+          || tetramino.point->x + x > 19
+          || prms.map->field[tetramino.point->x + x]
+                           [tetramino.point->y + y] == 1)) {
+        result = 1;
+      }
+    }
+  }
+  return result;
+}
+
 void spawn(params_t *prms) {
   // if (prms->stats->level > LEVEL_CNT)
   //   *prms->state = GAMEOVER;
   // else {
-  tetraminopos_init(prms->tetramino->point);
   prms->tetramino->variant = 0;
+  tetraminopos_init(prms->tetramino->point);
   get_tetramino(prms->tetramino);
   print_board(prms->map);
   print_tetramino(*prms->tetramino);
-  print_next_tetramino(prms);
-  // get_next_tetramino(prms);
-  MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
-  int sum = 0;
-  for (int i = 0; i < 20; i++) {
-    for (int j = 0; j < 10; j++) { 
-      if (prms->map->field[i][j] == 1) {
-        sum++;
-      }
-    }
+  if (check_tetramino(*prms, *prms->tetramino) == 1) {
+    *prms->state = GAMEOVER;
+  } else {
+    print_next_tetramino(prms);
+    // get_next_tetramino(prms);
+    MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
+    *prms->state = MOVING;
   }
-  MVPRINTW(34, 20, "%d", sum);
-  // MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
-  // (*prms).tetramino->type = (prms->tetramino->type + 1) % 7;
-  // MVPRINTW(8, 37, "%02d", (*prms).tetramino->type);
-  // tetramino_fell(prms->tetramino_pos);
-  *prms->state = MOVING;
-  // }
 }
 
 void moveup(params_t *prms) {
@@ -309,7 +320,7 @@ bool is_block_right(params_t *prms) {
       if (prms->tetramino->figure[x][y] == 1 &&
           (prms->tetramino->point->y + y >= 9 ||
            prms->map->field[prms->tetramino->point->x + x]
-                           [prms->tetramino->point->y + y - 1] == 1)) {
+                           [prms->tetramino->point->y + y + 1] == 1)) {
         result = 0;
       }
     }
@@ -353,7 +364,6 @@ void movedown(params_t *prms) {
     refresh();
   } else {
     add_tetramino_on_board(prms);
-    tetraminopos_init(prms->tetramino->point);
     prms->tetramino->type = (prms->tetramino->type + 1) % 7;
     *prms->state = SPAWN;
   }
@@ -381,22 +391,21 @@ void moveleft(params_t *prms) {
   check(prms);
 }
 
-// void movefast(params_t *prms) {
-//   if (prms->tetramino_pos->y > 2) {
-//     CLEAR_BACKPOS(prms->tetramino_pos->x, prms->tetramino_pos->y);
-//     prms->tetramino_pos->y -= 3;
-//     PRINT_TETRAMINO(prms->tetramino_pos->x, prms->tetramino_pos->y);
-//     refresh();
-//   }
-
-//   check(prms);
-// }
+int check_new_variant(params_t prms) {
+  tetramino_t tetramino_test = *prms.tetramino;
+  tetramino_test.variant = (tetramino_test.variant + 1) % 4;
+  get_tetramino(&tetramino_test);
+  int result = check_tetramino(prms, tetramino_test);
+  return result;
+}
 
 void turn_right(params_t *prms) {
-  prms->tetramino->variant = (prms->tetramino->variant + 1) % 4;
-  clear_tetramino(*prms->tetramino);
-  get_tetramino(prms->tetramino);
-  print_tetramino(*prms->tetramino);
+  if (check_new_variant(*prms) == 0) {
+    prms->tetramino->variant = (prms->tetramino->variant + 1) % 4;
+    clear_tetramino(*prms->tetramino);
+    get_tetramino(prms->tetramino);
+    print_tetramino(*prms->tetramino);
+  }
   *prms->state = MOVING;
 }
 
@@ -422,13 +431,6 @@ void pause(params_t *prms) {
 void reach(params_t *prms) {
   prms->stats->score += 1;
   add_proggress(prms->map);
-  // if (check_level_compl(prms->map))
-  // {
-  //     prms->stats->level++;
-  //     prms->stats->speed++;
-  //     *prms->state = SPAWN;
-  // }
-  // else
   {
     tetraminopos_init(prms->tetramino->point);
     print_finished(prms->map);
@@ -438,13 +440,14 @@ void reach(params_t *prms) {
 
 void fell(params_t *prms) {
   if (prms->stats->fell) {
-    // prms->stats->lives--;
     tetraminopos_init(prms->tetramino->point);
     *prms->state = MOVING;
   } else
     *prms->state = GAMEOVER;
 }
 
-void gameover(params_t *prms) { print_banner(prms->stats); }
+void gameover(params_t *prms) { 
+  print_banner(prms->stats);
+}
 
 void exitstate(params_t *prms) { *prms->state = EXIT_STATE; }

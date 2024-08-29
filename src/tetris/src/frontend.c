@@ -4,7 +4,6 @@
 
 #include "../inc/objects.h"
 #include "../inc/tetr_frontend.h"
-
 // void print_tetramino(params_t *prms) {
 //   for (int x = 0; x < 4; x++) {
 //     for (int y = 0; y < 4; y++) {
@@ -33,13 +32,13 @@ void print_overlay(void) {
   print_rectangle(21, 24, BOARD_M + 3, BOARD_M + HUD_WIDTH + 4);
 
   MVPRINTW(2, BOARD_M + 5, "HIGH SCORE");
-  MVPRINTW(3, BOARD_M + 7, "01111");
+  MVPRINTW(3, BOARD_M + 8, "%05d", 0);
 
   MVPRINTW(6, BOARD_M + 8, "SCORE");
-  MVPRINTW(7, BOARD_M + 7, "00000");
+  MVPRINTW(7, BOARD_M + 8, "%05d", 0);
 
   MVPRINTW(10, BOARD_M + 8, "LEVEL");
-  MVPRINTW(11, BOARD_M + 12, "0");
+  MVPRINTW(11, BOARD_M + 11, "%02d", 1);
 
   MVPRINTW(14, BOARD_M + 8, "NEXT");
   MVPRINTW(15, BOARD_M + 4, "[ ][ ][ ][ ]");
@@ -95,7 +94,7 @@ void print_rectangle(int top_y, int bottom_y, int left_x, int right_x) {
 void print_stats(game_stats_t *stats) {
   MVPRINTW(3, BOARD_M + 8, "%04d", stats->high_score);
   MVPRINTW(7, BOARD_M + 8, "%04d", stats->score);
-  MVPRINTW(11, BOARD_M + 12, "%d", stats->level);
+  MVPRINTW(11, BOARD_M + 8, "%04d", stats->level);
 }
 
 void print_field(board_t *game, position *tetramino_pos) {
@@ -111,7 +110,7 @@ void print_tetramino(tetramino_t tetramino) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
         MVPRINTW(3 + tetramino.point->x + x, tetramino.point->y * 3 + 2 + y * 3,
-                 "+");
+                 "#");
       }
     }
   }
@@ -121,7 +120,7 @@ void print_next_tetr(tetramino_t tetramino) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
-        MVPRINTW(15 + x, 33 + y * 3 + 2, "+");
+        MVPRINTW(15 + x, 33 + y * 3 + 2, "#");
       } else {
         CLEAR_BACKPOS(15 + x, 33 + y * 3 + 2);
       }
@@ -144,7 +143,7 @@ void print_map(board_t map) {
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
       if (map.field[x][y] == 1) {
-        MVPRINTW(x + BOARDS_BEGIN + 1, y * 3 + 2, "+");
+        MVPRINTW(x + BOARDS_BEGIN + 1, y * 3 + 2, "#");
       } else {
         CLEAR_BACKPOS(x + BOARDS_BEGIN + 1, y * 3 + 2);
       }
@@ -177,24 +176,33 @@ void print_finished(board_t *game) {
       MVADDCH(1, i + 1, ' ');
   }
 }
+
 void print_banner(game_stats_t *stats) {
-  banner_t banner;
-
-  memset(banner.matrix, 0, (BANNER_N + 1) * (BANNER_M + 1));
-
-  clear();
-
-  if (!(read_banner(stats, &banner))) {
-    for (int i = 0; i < BANNER_N; i++)
-      for (int j = 0; j < BANNER_M; j++)
-        if (banner.matrix[i][j] == '#')
-          MVADDCH(i, j, ACS_BLOCK);
-        else
-          MVADDCH(i, j, ' ');
-    refresh();
-    napms(2000);
-  }
+  MVPRINTW(1,10,"GAME OVER");
+  MVPRINTW(2,8,"%s %d", "Your score: ", stats->score);
+  refresh();
+  napms(5000);
 }
+
+
+// void print_banner(game_stats_t *stats) {
+//   banner_t banner;
+
+//   memset(banner.matrix, 0, (BANNER_N + 1) * (BANNER_M + 1));
+
+//   clear();
+
+//   if (!(read_banner(stats, &banner))) {
+//     for (int i = 0; i < BANNER_N; i++)
+//       for (int j = 0; j < BANNER_M; j++)
+//         if (banner.matrix[i][j] == '#')
+//           MVADDCH(i, j, ACS_BLOCK);
+//         else
+//           MVADDCH(i, j, ' ');
+//     refresh();
+//     napms(2000);
+//   }
+// }
 
 int read_banner(game_stats_t *stats, banner_t *banner) {
   int rc = SUCCESS;
