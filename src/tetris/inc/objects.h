@@ -23,16 +23,27 @@ typedef struct {
   tetramino_t *tetramino;
 } board_t;
 
-typedef struct {
-  int score;
-  int high_score;
-  int level;
-  int speed;
-  int fell;
-  int won;
-  char current_time[8];
-} game_stats_t;
+// typedef struct {
+//   int score;
+//   int high_score;
+//   int level;
+//   int speed;
+//   int fell;
+//   int won;
+//   char current_time[8];
+// } game_stats_t;
 
+
+// typedef struct {
+//     int **field;
+//     int **next;
+//     int score;
+//     int high_score;
+//     int level;
+//     int speed;
+//     int pause;
+//   char current_time[8];
+// } GameInfo_t;
 
 typedef struct {
   char matrix[BANNER_N + 1][BANNER_M + 1];

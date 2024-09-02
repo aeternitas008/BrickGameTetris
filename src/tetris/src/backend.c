@@ -123,30 +123,30 @@ void add_tetramino_on_board(params_t *prms) {
 }
 
 
-int lvlproc(board_t *map, game_stats_t *stats) {
-  // timeout(INITIAL_TIMEOUT - stats->speed * 15);
+// int lvlproc(board_t *map, game_stats_t *stats) {
+//   // timeout(INITIAL_TIMEOUT - stats->speed * 15);
 
-  // char levelname[LEVELNAME_MAX + 1] = {0};
+//   // char levelname[LEVELNAME_MAX + 1] = {0};
 
-  // sprintf(levelname, LEVEL_DIR "%d.txt", stats->level);
+//   // sprintf(levelname, LEVEL_DIR "%d.txt", stats->level);
 
-  // FILE *level = fopen(levelname, "r");
+//   // FILE *level = fopen(levelname, "r");
 
-  int rc = SUCCESS;
+//   int rc = SUCCESS;
 
-  // if (level) {
-  //   for (int i = 0; i < ROWS_MAP && !rc; i++) {
-  //     if (fgets(map->field[i], COLS_MAP + 2, level) == NULL)
-  //       rc = ERROR;
-  //     else
-  //       map->field[i][strcspn(map->field[i], "\n")] = '\0';
-  //   }
-  //   fclose(level);
-  // } else
-  //   rc = ERROR;
+//   // if (level) {
+//   //   for (int i = 0; i < ROWS_MAP && !rc; i++) {
+//   //     if (fgets(map->field[i], COLS_MAP + 2, level) == NULL)
+//   //       rc = ERROR;
+//   //     else
+//   //       map->field[i][strcspn(map->field[i], "\n")] = '\0';
+//   //   }
+//   //   fclose(level);
+//   // } else
+//   //   rc = ERROR;
 
-  return rc;
-}
+//   return rc;
+// }
 
 void add_proggress(board_t *map) {
   // int position = 0;
@@ -155,6 +155,11 @@ void add_proggress(board_t *map) {
 
   // for (int progress_cnt = BOARD_M / ; progress_cnt > 0; progress_cnt--)
   //     map->finish[position++] = '0';
+}
+
+void userInput(UserAction_t action, bool hold) {
+  *prms.action = action;
+  *prms.hold = hold;
 }
 
 bool check_finish_state(position *frog, board_t *map) {
@@ -198,7 +203,7 @@ void fill_finish(char *finish_line) {
   finish_line[BOARD_M] = '\0';
 }
 
-void stats_init(game_stats_t *stats) {
+void stats_init(GameInfo_t *stats) {
   char *fname = "meta.txt";
   int N = 256;
   char buffer[N];
@@ -224,9 +229,9 @@ void stats_init(game_stats_t *stats) {
   MVPRINTW(23, BOARD_M + 8, "%s", stats->current_time);
   stats->speed = 1;
   stats->score = 0;
-  stats->won = FALSE;
+  // stats->won = FALSE;
 }
-void new_stats_init(game_stats_t *stats) {
+void new_stats_init(GameInfo_t *stats) {
   char *fname = "meta.txt";
   // int N = 256;
   // char buffer[N];

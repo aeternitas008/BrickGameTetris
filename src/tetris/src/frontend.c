@@ -82,7 +82,7 @@ void print_rectangle(int top_y, int bottom_y, int left_x, int right_x) {
 }
 
 // вывод статов
-void print_stats(game_stats_t *stats) {
+void print_stats(GameInfo_t *stats) {
   MVPRINTW(3, BOARD_M + 8, "%04d", stats->high_score);
   MVPRINTW(7, BOARD_M + 8, "%04d", stats->score);
   MVPRINTW(11, BOARD_M + 8, "%04d", stats->level);
@@ -101,7 +101,7 @@ void print_tetramino(tetramino_t tetramino) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
         MVPRINTW(3 + tetramino.point->x + x, tetramino.point->y * 3 + 2 + y * 3,
-                 "#");
+                 "■");
       }
     }
   }
@@ -111,7 +111,7 @@ void print_next_tetr(tetramino_t tetramino) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
-        MVPRINTW(15 + x, 33 + y * 3 + 2, "#");
+        MVPRINTW(15 + x, 33 + y * 3 + 2, "■");
       } else {
         CLEAR_BACKPOS(15 + x, 33 + y * 3 + 2);
       }
@@ -134,7 +134,7 @@ void print_board(board_t map) {
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
       if (map.field[x][y] == 1) {
-        MVPRINTW(x + BOARDS_BEGIN + 1, y * 3 + 2, "#");
+        MVPRINTW(x + BOARDS_BEGIN + 1, y * 3 + 2, "■");
       } else {
         CLEAR_BACKPOS(x + BOARDS_BEGIN + 1, y * 3 + 2);
       }

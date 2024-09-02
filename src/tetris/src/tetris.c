@@ -12,7 +12,7 @@ int main(void) {
 
 void game_loop() {
   board_t map;
-  game_stats_t stats;
+  GameInfo_t stats;
   position tetramino_pos;
   bool no_break = TRUE;
   int signal = 0;
@@ -39,10 +39,13 @@ void game_loop() {
   while (no_break) {
     if (state == GAMEOVER || state == EXIT_STATE) no_break = FALSE;
 
-    sigact(get_signal(signal), &state, &prms);
+    sigact(get_signal(signal), &prms);
     // if (state == SPAWN) {
     //   *tetramino.type = tetramino.type + 1;
     // }
-    if (state == MOVING || state == START) signal = GET_USER_INPUT;
+    if (state == MOVING || state == START) 
+    // void userInput(UserAction_t action, bool hold);
+    signal = GET_USER_INPUT;
   }
 }
+

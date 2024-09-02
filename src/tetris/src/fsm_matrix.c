@@ -6,7 +6,11 @@
 
 #include <math.h>
 // #define _POSIX_C_SOURCE 199309L
-#define CLOCK_REALTIME 0
+
+//for ubuntu
+// #define CLOCK_REALTIME 0
+
+
 // This is a finite state machine realisation based on matrix of "actions".
 /*
     Function sigact() takes an action function from fsm_table.
@@ -24,17 +28,18 @@
 //     long   tv_nsec; /* nanoseconds */
 // };
 
-int clock_gettime(int clk_id, struct timespec *tp) {
-  struct timeval now;
-  int rv = gettimeofday(&now, NULL);
+// for ubuntu
+// int clock_gettime(int clk_id, struct timespec *tp) {
+//   struct timeval now;
+//   int rv = gettimeofday(&now, NULL);
 
-  if (rv == 0) {
-    tp->tv_sec = now.tv_sec;
-    tp->tv_nsec =
-        now.tv_usec * 1000;  // Конвертируем микросекунды в наносекунды
-  }
-  return rv;
-}
+//   if (rv == 0) {
+//     tp->tv_sec = now.tv_sec;
+//     tp->tv_nsec =
+//         now.tv_usec * 1000;  // Конвертируем микросекунды в наносекунды
+//   }
+//   return rv;
+// }
 
 typedef void (*action)(params_t *prms);
 
@@ -90,7 +95,7 @@ void get_next_tetramino(params_t *prms) {
 //   {}
 // }
 
-void sigact(UserAction_t sig, state_t *state, params_t *prms) {
+void sigact(UserAction_t sig, params_t *prms) {
   action act = NULL;
   // params_t prms;
   // prms.stats = stats;
@@ -100,7 +105,7 @@ void sigact(UserAction_t sig, state_t *state, params_t *prms) {
   // prms.time = time;
   // prms.time =
   // if (*state != FILE_ERROR_STATE)
-  act = fsm_table[*state][sig];
+  act = fsm_table[*prms->state][sig];
 
   if (act) act(prms);
 }

@@ -2,6 +2,7 @@
 #define TETRIS_BACKEND_H
 
 #include <ncurses.h>
+#include <string.h>
 
 #include "defines.h"
 #include "fsm.h"
@@ -9,7 +10,7 @@
 // #include "string.h"
 
 #include <time.h>
-#include "tetr_frontend.h"
+// #include "tetr_frontend.h"
 
 #define NOSIG 8
 
@@ -55,6 +56,7 @@ typedef struct game_params {
   bool *break_flag;
   struct timespec *time;
   tetramino_t *tetramino;
+  int hold;
 } params_t;
 
 // typedef struct {
@@ -67,15 +69,15 @@ typedef struct game_params {
 
 
 UserAction_t get_signal(int user_input);
-void sigact(UserAction_t sig, state_t *state, params_t *prms);
+void sigact(UserAction_t sig, params_t *prms);
 
 void add_tetramino_on_board(params_t *prms);
 
-int lvlproc(board_t *map, game_stats_t *stats);
+// int lvlproc(board_t *map, game_stats_t *stats);
 void add_proggress(board_t *map);
-void stats_init(game_stats_t *stats);
+void stats_init(GameInfo_t *stats);
 
-void new_stats_init(game_stats_t *stats);
+void new_stats_init(GameInfo_t *stats);
 
 void tetraminopos_init(position *tetramino_pos);
 void fill_finish(char *finish_line);
@@ -89,4 +91,6 @@ bool check_level_compl(board_t *map);
 int check_new_variant(params_t prms);
 int check_tetramino(params_t prms, tetramino_t tetramino);
 void get_array_figures(unsigned int origin[19][4][4]);
+
+void userInput(UserAction_t action, bool hold);
 #endif

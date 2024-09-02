@@ -6,14 +6,15 @@
 #include "defines.h"
 #include "fsm.h"
 #include "objects.h"
+#include "tetr_backend.h"
 
 void print_overlay(void);
 void print_rectangle(int top_y, int bottom_y, int left_x, int right_x);
-void print_stats(game_stats_t *stats);
+void print_stats(GameInfo_t *stats);
 void print_field();
 void print_board(board_t map);
 void print_finished(board_t *game);
-void print_gameover(game_stats_t *stats);
+void print_gameover(GameInfo_t *stats);
 void print_tetramino(tetramino_t tetramino);
 void clear_tetramino(tetramino_t tetramino);
 
