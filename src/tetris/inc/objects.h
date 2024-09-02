@@ -33,6 +33,7 @@ typedef struct {
   char current_time[8];
 } game_stats_t;
 
+
 typedef struct {
   char matrix[BANNER_N + 1][BANNER_M + 1];
 } banner_t;

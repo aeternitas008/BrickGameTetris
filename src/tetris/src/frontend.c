@@ -62,15 +62,6 @@ void print_overlay(void) {
   MVPRINTW(BOARD_N / 2, (BOARD_M - INTRO_MESSAGE_LEN) / 2 + 1, INTRO_MESSAGE);
 }
 
-void print_levelerror(void) {
-  clear();
-  MVPRINTW(0, 0, "An error occured openning level file!");
-  MVPRINTW(2, 0, "Please check ./tests/ directory.");
-  MVPRINTW(3, 0, "There should be 5 level files named level_(1-5).txt.");
-  MVPRINTW(4, 0, "Also try to open the game nearby ./tests/ directory.");
-  MVPRINTW(6, 0, "Press any key to exit.");
-}
-
 void print_rectangle(int top_y, int bottom_y, int left_x, int right_x) {
   MVADDCH(top_y, left_x, ACS_ULCORNER);
 
@@ -97,7 +88,7 @@ void print_stats(game_stats_t *stats) {
   MVPRINTW(11, BOARD_M + 8, "%04d", stats->level);
 }
 
-void print_field(board_t *game, position *tetramino_pos) {
+void print_field() {
   for (int i = 3; i <= 22; i++) {
     MVPRINTW(i, 1, "[ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]");
     refresh();
@@ -139,30 +130,13 @@ void clear_tetramino(tetramino_t tetramino) {
   }
 }
 
-void print_map(board_t map) {
+void print_board(board_t map) {
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
       if (map.field[x][y] == 1) {
         MVPRINTW(x + BOARDS_BEGIN + 1, y * 3 + 2, "#");
       } else {
         CLEAR_BACKPOS(x + BOARDS_BEGIN + 1, y * 3 + 2);
-      }
-    }
-  }
-}
-
-void print_board(board_t *map) { print_map(*map); }
-
-void print_cars(board_t *game) {
-  for (int i = MAP_PADDING + 1; i < BOARD_N - MAP_PADDING + 1; i++) {
-    if (i % 2 == (MAP_PADDING + 1) % 2) {
-      for (int j = 1; j < BOARD_M + 1; j++) MVADDCH(i, j, ACS_BLOCK);
-    } else {
-      for (int j = 1; j < BOARD_M + 1; j++) {
-        if (game->field[i - MAP_PADDING - 1][j - 1] == '0')
-          MVADDCH(i, j, ' ');
-        else
-          MVADDCH(i, j, ']');
       }
     }
   }
@@ -177,53 +151,9 @@ void print_finished(board_t *game) {
   }
 }
 
-void print_banner(game_stats_t *stats) {
+void print_gameover(GameInfo_t *stats) {
   MVPRINTW(1,10,"GAME OVER");
   MVPRINTW(2,8,"%s %d", "Your score: ", stats->score);
   refresh();
   napms(5000);
-}
-
-
-// void print_banner(game_stats_t *stats) {
-//   banner_t banner;
-
-//   memset(banner.matrix, 0, (BANNER_N + 1) * (BANNER_M + 1));
-
-//   clear();
-
-//   if (!(read_banner(stats, &banner))) {
-//     for (int i = 0; i < BANNER_N; i++)
-//       for (int j = 0; j < BANNER_M; j++)
-//         if (banner.matrix[i][j] == '#')
-//           MVADDCH(i, j, ACS_BLOCK);
-//         else
-//           MVADDCH(i, j, ' ');
-//     refresh();
-//     napms(2000);
-//   }
-// }
-
-int read_banner(game_stats_t *stats, banner_t *banner) {
-  int rc = SUCCESS;
-  FILE *file = NULL;
-
-  // if (stats->lives)
-  //     file = fopen(YOU_WON, "r");
-  // else
-  //     file = fopen(YOU_LOSE, "r");
-
-  if (file) {
-    for (int i = 0; i < BANNER_N - 1 && !rc; i++) {
-      if (fgets(banner->matrix[i], BANNER_M + 2, file) == NULL)
-        rc = ERROR;
-      else
-        banner->matrix[i][strcspn(banner->matrix[i], "\n")] = '\0';
-    }
-
-    fclose(file);
-  } else
-    rc = ERROR;
-
-  return rc;
 }

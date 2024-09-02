@@ -8,15 +8,12 @@
 #include "objects.h"
 
 void print_overlay(void);
-void print_levelerror(void);
 void print_rectangle(int top_y, int bottom_y, int left_x, int right_x);
 void print_stats(game_stats_t *stats);
 void print_field();
-void print_board(board_t *game);
-void print_cars(board_t *game);
+void print_board(board_t map);
 void print_finished(board_t *game);
-void print_banner(game_stats_t *stats);
-int read_banner(game_stats_t *stats, banner_t *banner);
+void print_gameover(game_stats_t *stats);
 void print_tetramino(tetramino_t tetramino);
 void clear_tetramino(tetramino_t tetramino);
 

@@ -61,5 +61,6 @@
 // #define MY_BLOCK = "▢";
 // #define MY_BLOCK = "■";
 #define MY_BLOCK = "+";
+#define TETR_BLOCK = '#';
 
 #endif

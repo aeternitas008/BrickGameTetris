@@ -2,6 +2,107 @@
 
 #include "../inc/objects.h"
 #include "../inc/tetr_backend.h"
+
+
+void get_tetramino(tetramino_t *tetramino) {
+  int key = 0;
+  if (tetramino->type == 1) {
+    key = tetramino->variant % 2 + 1;
+  } else if (tetramino->type == 2) {
+    key = tetramino->variant % 2 + 3;
+  } else if (tetramino->type == 3) {
+    key = tetramino->variant % 2 + 5;
+  } else if (tetramino->type == 4) {
+    key = tetramino->variant + 7;
+  } else if (tetramino->type == 5) {
+    key = tetramino->variant + 11;
+  } else if (tetramino->type == 6) {
+    key = tetramino->variant + 15;
+  }
+  for (int x = 0; x < 4; x++) {
+    for (int y = 0; y < 4; y++) {
+      tetramino->figure[x][y] = tetramino->array_figures[key][x][y];
+    }
+  }
+}
+
+void get_array_figures(unsigned int origin[19][4][4]) {
+  printf("Inside get_matrix\n");
+  unsigned int matrix[19][4][4] = {
+      {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}},
+
+      {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+
+      {{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}},
+
+      {{0, 0, 0, 0}, {0, 0, 1, 1}, {0, 1, 1, 0}, {0, 0, 0, 0}},
+
+      {{0, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 0, 1}, {0, 0, 0, 0}},
+
+      {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 1, 1}, {0, 0, 0, 0}},
+
+      {{0, 0, 0, 1}, {0, 0, 1, 1}, {0, 0, 1, 0}, {0, 0, 0, 0}},
+
+      {{0, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 0, 0}, {0, 0, 0, 0}},
+
+      {{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 0, 0}},
+
+      {{0, 0, 0, 1}, {0, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+
+      {{0, 1, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}},
+      // J 11
+      {{0, 0, 0, 0}, {0, 1, 1, 1}, {0, 0, 0, 1}, {0, 0, 0, 0}},
+
+      {{0, 0, 1, 1}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}},
+
+      {{0, 1, 0, 0}, {0, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+
+      {{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}},
+      // T 15
+      {{0, 0, 0, 0}, {0, 1, 1, 1}, {0, 0, 1, 0}, {0, 0, 0, 0}},
+
+      {{0, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 1, 0}, {0, 0, 0, 0}},
+
+      {{0, 0, 1, 0}, {0, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
+
+      {{0, 0, 1, 0}, {0, 1, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}},
+  };
+  for (int n = 0; n < 19; n++) {
+    for (int x = 0; x < 4; x++) {
+      for (int y = 0; y < 4; y++) {
+        origin[n][x][y] = matrix[n][x][y];
+      }
+    }
+  }
+}
+
+
+int check_new_variant(params_t prms) {
+  tetramino_t tetramino_test = *prms.tetramino;
+  tetramino_test.variant = (tetramino_test.variant + 1) % 4;
+  get_tetramino(&tetramino_test);
+  int result = check_tetramino(prms, tetramino_test);
+  return result;
+}
+
+int check_tetramino(params_t prms, tetramino_t tetramino) {
+  int result = 0;
+  for(int x = 0; x < 4 && result == 0; x++) {
+    for(int y = 0; y < 4 && result == 0; y++) {
+      if (tetramino.figure[x][y] == 1 &&
+          (tetramino.point->y + y > 9 
+          || tetramino.point->y + y < 0 
+          || tetramino.point->x + x < 0
+          || tetramino.point->x + x > 19
+          || prms.map->field[tetramino.point->x + x]
+                           [tetramino.point->y + y] == 1)) {
+        result = 1;
+      }
+    }
+  }
+  return result;
+}
+
 void init_board(board_t *map) {
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
@@ -9,6 +110,18 @@ void init_board(board_t *map) {
     }
   }
 }
+
+void add_tetramino_on_board(params_t *prms) {
+  for (int x = 0; x < 4; x++) {
+    for (int y = 0; y < 4; y++) {
+      if (prms->tetramino->figure[x][y] == 1) {
+        prms->map->field[prms->tetramino->point->x + x]
+                        [prms->tetramino->point->y + y] = 1;
+      }
+    }
+  }
+}
+
 
 int lvlproc(board_t *map, game_stats_t *stats) {
   // timeout(INITIAL_TIMEOUT - stats->speed * 15);
@@ -138,16 +251,11 @@ void new_stats_init(game_stats_t *stats) {
   MVPRINTW(11, BOARD_M + 11, "%02d", stats->level);
 }
 
-void shift_map(board_t *map) {
-  for (int i = 1; i < ROWS_MAP; i += 2) {
-    memmove(&map->field[i][1], &map->field[i][0], COLS_MAP * sizeof(char));
-    map->field[i][0] = map->field[i][COLS_MAP];
-  }
-}
-
+// переписать свой код удаления линии на этот
 void remove_line(board_t *map, int line) {
   for (int i = 1; i < ROWS_MAP; i += 2) {
     memmove(&map->field[i][1], &map->field[i][0], COLS_MAP * sizeof(char));
     map->field[i][0] = map->field[i][COLS_MAP];
   }
 }
+
