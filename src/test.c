@@ -1,5 +1,5 @@
 #include <check.h>
-#include "brick_game/tetris/tetr_backend.h"  // Замените на правильный заголовочный файл
+#include "brick_game/tetris/backend.h"  // Замените на правильный заголовочный файл
 
 #define EXIT_SUCCESS 1
 #define EXIT_FAILURE 0
