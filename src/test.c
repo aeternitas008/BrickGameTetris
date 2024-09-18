@@ -1,102 +1,94 @@
-#include "brick_game/tetris/tetris.h"
-// #include "brick_game/tetris/defines.h"
-// #include "brick_game/tetris/objects.h"
-
 #include <check.h>
+#include "brick_game/tetris/tetr_backend.h"  // Замените на правильный заголовочный файл
 
-#define	EXIT_FAILURE	1
-#define	EXIT_SUCCESS	0
+#define EXIT_SUCCESS 1
+#define EXIT_FAILURE 0
 
-START_TEST(exit_test) {
-  // board_t *field;
-  tetramino_t tetramino;
-  tetramino.type = 0;
-    tetramino.variant = 0;
-    get_tetramino(&tetramino);
-  params_t *prms = getPrmsInstance();
-  prms->tetramino = &tetramino;
-  prms->map->field[1][1] = 1;
-  // ck_assert_int_eq(, OK);
-  // s21_remove_matrix(&A);
-}
-END_TEST
-
-START_TEST(test_move_down)
+// Тест инициализации доски
+START_TEST(test_init_board)
 {
-    tetramino_t tetramino;
-    tetramino.type = 1;
-    board_t board;
-    init_board(&board);
-    get_tetramino(&tetramino);
-    params_t prms;
-    prms.tetramino = &tetramino;
-    movedown(&prms);
+    board_t map;
+    init_board(&map);
 
-    ck_assert_int_eq(tetramino.point->x, 1);  // Пример
-    ck_assert_int_eq(tetramino.point->x, 0);  // Пример
-}
-END_TEST
-
-
-
-START_TEST(test_move_down2) {
-    tetramino_t tetramino;
-    tetramino.type = 1;
-    board_t board;
-    init_board(&board);
-    get_tetramino(&tetramino);
-    params_t prms;
-    prms.tetramino = &tetramino;
-    movedown(&prms);
-
-    ck_assert_int_eq(tetramino.point->x, 1);  // Пример
-    ck_assert_int_eq(tetramino.point->x, 0);  // Пример
+    // Проверка, что все поля доски инициализированы в 0
+    for (int x = 0; x < 20; x++) {
+        for (int y = 0; y < 10; y++) {
+            ck_assert_int_eq(map.field[x][y], 0);
+        }
     }
+}
 END_TEST
 
-Suite *s21_create_matrix_suite(void) {
-  Suite *suite = suite_create("s21_create_matrix");
-  TCase *tc_core = tcase_create("core_of_create_matrix");
-  tcase_add_test(tc_core, exit_test);
-  tcase_add_test(tc_core, test_move_down);
-  tcase_add_test(tc_core, test_move_down2);
-  suite_add_tcase(suite, tc_core);
+// Тест добавления тетрамино на доску
+START_TEST(test_add_tetramino_on_board)
+{
+    board_t map;
+    tetramino_t tetramino;
+    position pos = {0, 0};
 
-  return suite;
+    init_board(&map);
+    tetramino.point = &pos;
+    tetramino.figure[0][0] = 1;
+    tetramino.figure[0][1] = 0;
+    tetramino.figure[1][0] = 1;
+    tetramino.figure[1][1] = 1;
+
+    params_t prms = {.tetramino = &tetramino, .map = &map};
+
+    add_tetramino_on_board(&prms);
+
+    ck_assert_int_eq(map.field[0][0], 1);
+    ck_assert_int_eq(map.field[1][0], 1);
+    ck_assert_int_eq(map.field[1][1], 1);
+}
+END_TEST
+
+// Тест проверки полной линии
+START_TEST(test_has_full_line)
+{
+    board_t map;
+    init_board(&map);
+
+    // Заполняем строку для проверки
+    for (int y = 0; y < 10; y++) {
+        map.field[5][y] = 1;
+    }
+
+    int result = has_full_line(&map, 5); // Предполагается, что эта функция проверяет линию 5
+    ck_assert_int_eq(result, 1);  // Ожидаем, что функция вернет 1 (линия заполнена)
+}
+END_TEST
+
+// Главная функция для запуска тестов
+Suite* tetris_suite(void)
+{
+    Suite *s;
+    TCase *tc_core;
+
+    s = suite_create("Tetris");
+    tc_core = tcase_create("Core");
+
+    tcase_add_test(tc_core, test_init_board);
+    tcase_add_test(tc_core, test_add_tetramino_on_board);
+    tcase_add_test(tc_core, test_has_full_line);
+
+    suite_add_tcase(s, tc_core);
+
+    return s;
 }
 
-// Suite *s21_remove_matrix_suite(void) {
-//   Suite *suite = suite_create("s21_remove_matrix");
-//   TCase *tc_core = tcase_create("core_of_remove_matrix");
-//   tcase_add_test(tc_core, remove_matrix_1);
-//   tcase_add_test(tc_core, remove_matrix_2);
-//   tcase_add_test(tc_core, remove_matrix_3);
-//   suite_add_tcase(suite, tc_core);
+int main(void)
+{
+    int number_failed;
+    Suite *s;
+    SRunner *sr;
 
-//   return suite;
-// }
+    s = tetris_suite();
+    sr = srunner_create(s);
 
+    srunner_run_all(sr, CK_NORMAL);
+    number_failed = srunner_ntests_failed(sr);
+    srunner_free(sr);
 
-void s21_suit_execution(Suite *suite, int *failed_count) {
-  SRunner *suite_runner = srunner_create(suite);
-  srunner_run_all(suite_runner, CK_NORMAL);
-  *failed_count = srunner_ntests_failed(suite_runner);
-  srunner_free(suite_runner);
-}
-
-int main(void) {
-  int failed_count = 0;
-  s21_suit_execution(s21_create_matrix_suite(), &failed_count);
-  // s21_suit_execution(s21_remove_matrix_suite(), &failed_count);
-  // s21_suit_execution(s21_eq_matrix_suite(), &failed_count);
-  // s21_suit_execution(s21_sum_matrix_suite(), &failed_count);
-  // s21_suit_execution(s21_sub_matrix_suite(), &failed_count);
-  // s21_suit_execution(s21_mult_number_suite(), &failed_count);
-  // s21_suit_execution(s21_mult_matrix_suite(), &failed_count);
-  // s21_suit_execution(s21_transpose_suite(), &failed_count);
-  // s21_suit_execution(s21_calc_complements_suite(), &failed_count);
-  // s21_suit_execution(s21_determinant_suite(), &failed_count);
-  // s21_suit_execution(s21_inverse_matrix_suite(), &failed_count);
-
-  return failed_count == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

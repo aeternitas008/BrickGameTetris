@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <wchar.h>
 
-#include "tetr_frontend.h"
+#include "frontend.h"
 
 void print_overlay(void) {
   // chtype are = "w";

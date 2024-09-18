@@ -1,5 +1,4 @@
-#include <locale.h>
-#include "tetr_backend.h"
+#include "backend.h"
 
 // #include "../../gui/cli/tetr_frontend.h"
 // #include <stdlib.h>
@@ -24,23 +23,8 @@ void game_loop() {
   state_t state = START;
   int signal = 0;
   params_t *prms = getPrmsInstance();
-  GameInfo_t stats;
-  position tetramino_pos;
-  struct timespec time;
-  board_t map;
-  init_board(&map);
-  prms->map = &map;
-  tetraminopos_init(&tetramino_pos);
-  tetramino_t tetramino = {0};
-  tetramino.point = &tetramino_pos;
-  tetramino.variant = 0;
-  tetramino.type = 0;
-  get_array_figures(tetramino.array_figures);
-  stats_init(&stats);
-  prms->stats = &stats;
   prms->state = &state;
-  prms->tetramino = &tetramino;
-  prms->time = &time;
+
 
   while (no_break) {
     if (state == MOVING || state == START) signal = GET_USER_INPUT;

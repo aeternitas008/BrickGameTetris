@@ -1,17 +1,32 @@
-#include <math.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <time.h>
 
-#include "objects.h"
-#include "tetr_backend.h"
-#include "tetris.h"
+#include "backend.h"
 
 params_t *getPrmsInstance() { 
   static params_t s_prms;
   return &s_prms; 
 }
 
+void init_prms() {
+  params_t *prms = getPrmsInstance();
+  state_t state = START;
+  GameInfo_t stats;
+  position tetramino_pos;
+  struct timespec time;
+  board_t map;
+  init_board(&map);
+  prms->map = &map;
+  tetraminopos_init(&tetramino_pos);
+  tetramino_t tetramino = {0};
+  tetramino.point = &tetramino_pos;
+  tetramino.variant = 0;
+  tetramino.type = 0;
+  get_array_figures(tetramino.array_figures);
+  stats_init(&stats);
+  prms->stats = &stats;
+  prms->state = &state;
+  prms->tetramino = &tetramino;
+  prms->time = &time;
+}
 
 void get_tetramino(tetramino_t *tetramino) {
   int key = 0;
@@ -181,7 +196,6 @@ action fsm_table[8][9] = {
      turn_right, check},
     {shifting, shifting, exitstate, shifting, shifting, shifting, shifting,
      shifting, shifting},
-    // {pause_game, pause_game, pause_game, pause_game, pause_game, pause_game, pause_game, pause_game, pause_game},
     {fell, fell, fell, fell, fell, fell, fell, fell, fell},
     {gameover, gameover, gameover, gameover, gameover, gameover, gameover,
      gameover, gameover},
@@ -189,7 +203,7 @@ action fsm_table[8][9] = {
      exitstate, check, check}};
 
 void fell(params_t *prms) {
-  
+  prms->hold = prms->hold;
 }
 
 void print_next_tetramino(params_t *prms) {
@@ -257,8 +271,8 @@ void shifting(params_t *prms) {
   clock_gettime(CLOCK_REALTIME, &current_time);
 
   // difficult level
-  int diff = BASE_DELAY * pow(0.8, prms->stats->level - 1);
-  if (offset(prms, &current_time) >= diff) {
+  int delay = BASE_DELAY * pow(0.8, prms->stats->level - 1);
+  if (offset(prms, &current_time) >= delay) {
     updateCurrentState();
     (*prms).time->tv_sec = current_time.tv_sec;
     (*prms).time->tv_nsec = current_time.tv_nsec;
@@ -314,6 +328,7 @@ void check(params_t *prms) {
 }
 
 void start(params_t *prms) {
+  init_prms();
   print_field();
   tetraminopos_init(prms->tetramino->point);
   clock_gettime(CLOCK_REALTIME, prms->time);
