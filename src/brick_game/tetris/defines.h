@@ -12,22 +12,22 @@
 
 #define GET_USER_INPUT getch()
 
-// #define PRINT_TETRAMINO(x, y)
-//   mvprintw(BOARDS_BEGIN + (x), BOARDS_BEGIN + (y), "@")
 #define MVPRINTW(y, x, ...) \
   mvprintw(BOARDS_BEGIN + (y), BOARDS_BEGIN + (x), __VA_ARGS__)
 #define MVADDCH(y, x, c) mvaddch(BOARDS_BEGIN + (y), BOARDS_BEGIN + (x), c)
 #define CLEAR_BACKPOS(y, x) mvaddch(BOARDS_BEGIN + (y), BOARDS_BEGIN + (x), ' ')
 
-#define YOU_WON "tests/game_progress/you_won.txt"
-#define YOU_LOSE "tests/game_progress/you_lose.txt"
-#define LEVEL_DIR "tests/levels/level_"
-#define INTRO_MESSAGE "Press ENTER to start!"
+#define SCORE_FILE "brick_game/tetris/score.txt"
+
+#define INTRO_MESSAGE "Press ENTER to Start!"
 #define INTRO_MESSAGE_LEN 21
 #define LEVEL_CNT 5
 #define LEVELNAME_MAX 25
 
-#define MAX_WIN_COUNT 10
+#define MAX_LVL 10
+#define BASE_DELAY 1000
+
+#define SCORE_FOR_NXT_LVL 600
 
 #define ROWS_MAP 20
 #define COLS_MAP 10
@@ -47,9 +47,9 @@
 #define BANNER_M 100
 
 #define SUCCESS 0
-#define ERROR 1
+// #define ERROR 1
 
-#define NO_INPUT -1
+#define NOSIG 8
 
 #define ESCAPE_KEY 27
 #define ENTER_KEY 10
@@ -58,8 +58,6 @@
 #define P_KEY 112
 #define P_KEY_SMALL 80
 
-// #define MY_BLOCK = "▢";
-// #define MY_BLOCK = "■";
 #define MY_BLOCK '+'
 #define TETR_BLOCK "#"
 #define BLOCK "■"

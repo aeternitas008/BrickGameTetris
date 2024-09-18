@@ -20,11 +20,6 @@ typedef struct {
 
 typedef struct {
   int field[ROWS_MAP][COLS_MAP];
-  tetramino_t *tetramino;
 } board_t;
-
-typedef struct {
-  char matrix[BANNER_N + 1][BANNER_M + 1];
-} banner_t;
 
 #endif

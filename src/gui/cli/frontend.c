@@ -3,22 +3,14 @@
 #include <wchar.h>
 
 #include "tetr_frontend.h"
-// void print_tetramino(params_t *prms) {
-//   for (int x = 0; x < 4; x++) {
-//     for (int y = 0; y < 4; y++) {
-//       if (prms->tetramino->figure[x][y] == 1) {
-//         MVPRINTW(prms->tetramino->point->x + x, prms->tetramino->point->y +
-//         y,
-//                  "o");
-//       }
-//     }
-//   }
-// }
 
 void print_overlay(void) {
-  // init_pair(1, COLOR_CYAN, COLOR_BLACK);
-  // init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
-  // attron(COLOR_PAIR(1));
+  // chtype are = "w";
+  start_color();
+  init_pair(1, COLOR_CYAN, COLOR_BLACK);
+  init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
+  attron(COLOR_PAIR(1));
+  // COLOR_PAIR(1);
   print_rectangle(0, BOARD_N - 1, 0, BOARD_M + 1);
   print_rectangle(0, BOARD_N - 1, BOARD_M + 2, BOARD_M + HUD_WIDTH + 5);
 
@@ -48,16 +40,6 @@ void print_overlay(void) {
   MVPRINTW(22, BOARD_M + 8, "TIME");
   MVPRINTW(23, BOARD_M + 8, "12:50");
 
-  // MVPRINTW(21, 1, "[■][■][■][■][■][■][■][■][■][■]");
-  // MVPRINTW(22, 1, "[■][■][■][■][■][■][■][■][■][■]");
-  // MVPRINTW(23, 1, "[■][■][■][■][■][■][■][■][■][■]");
-  // MVPRINTW(24, 1, "[■][■][■][■][■][■][■][■][■][■]");
-  // MVPRINTW(25, 1, "[■][■][■][■][■][■][■][■][■][■]");
-  // MVPRINTW(26, 1, "[■][■][■][■][■][■][■][■][■][■]");
-  // MVPRINTW(27, 1, "[■][■][■][■][■][■][■][■][■][■]");
-
-  // ▢▢▢▢
-
   MVPRINTW(BOARD_N / 2, (BOARD_M - INTRO_MESSAGE_LEN) / 2 + 1, INTRO_MESSAGE);
 }
 
@@ -82,9 +64,9 @@ void print_rectangle(int top_y, int bottom_y, int left_x, int right_x) {
 
 // вывод статов
 void print_stats(GameInfo_t *stats) {
-  MVPRINTW(3, BOARD_M + 8, "%04d", stats->high_score);
-  MVPRINTW(7, BOARD_M + 8, "%04d", stats->score);
-  MVPRINTW(11, BOARD_M + 8, "%04d", stats->level);
+  MVPRINTW(3, BOARD_M + 8, "%05d", stats->high_score);
+  MVPRINTW(7, BOARD_M + 8, "%05d", stats->score);
+  MVPRINTW(11, BOARD_M + 11, "%02d", stats->level);
 }
 
 void print_field() {
@@ -96,6 +78,7 @@ void print_field() {
 }
 
 void print_tetramino(tetramino_t tetramino) {
+  attron(COLOR_PAIR(2));
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
@@ -104,6 +87,20 @@ void print_tetramino(tetramino_t tetramino) {
       }
     }
   }
+}
+
+void print_pause(){
+  MVPRINTW(1, 2, "Press ENTER or P to continue");
+  MVPRINTW(2, 8, "or ESC to exit");
+}
+
+void clear_pause(){
+  MVPRINTW(1, 2, "                            ");
+  MVPRINTW(2, 8, "              ");
+}
+
+void update_time(int hours, int minutes) {
+  MVPRINTW(23, BOARD_M + 8, "%02d:%02d", hours, minutes);
 }
 
 void print_next_tetr(tetramino_t tetramino) {
@@ -138,15 +135,6 @@ void print_board(board_t map) {
         CLEAR_BACKPOS(x + BOARDS_BEGIN + 1, y * 3 + 2);
       }
     }
-  }
-}
-
-void print_finished(board_t *game) {
-  for (int i = 0; i < BOARD_M; i++) {
-    if (game->field[i][i] == '0')
-      MVADDCH(1, i + 1, ACS_BLOCK);
-    else
-      MVADDCH(1, i + 1, ' ');
   }
 }
 

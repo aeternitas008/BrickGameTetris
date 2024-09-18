@@ -3,8 +3,8 @@
 
 #include <locale.h>
 
-#include "tetr_backend.h"
 #include "../../gui/cli/tetr_frontend.h"
+#include "tetr_backend.h"
 
 void game_loop();
 

@@ -1,16 +1,17 @@
-#include <stdlib.h>
 #include <math.h>
+#include <stdlib.h>
 #include <sys/time.h>
 #include <time.h>
 
 #include "objects.h"
 #include "tetr_backend.h"
-
 #include "tetris.h"
 
-static params_t s_prms;
+params_t *getPrmsInstance() { 
+  static params_t s_prms;
+  return &s_prms; 
+}
 
-params_t *getPrmsInstance() { return &s_prms; }
 
 void get_tetramino(tetramino_t *tetramino) {
   int key = 0;
@@ -35,50 +36,10 @@ void get_tetramino(tetramino_t *tetramino) {
 }
 
 void get_array_figures(unsigned int origin[19][4][4]) {
-  printf("Inside get_matrix\n");
-  unsigned int matrix[19][4][4] = {
-      {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}},
-
-      {{0, 0, 0, 0}, {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
-
-      {{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}},
-
-      {{0, 0, 0, 0}, {0, 0, 1, 1}, {0, 1, 1, 0}, {0, 0, 0, 0}},
-
-      {{0, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 0, 1}, {0, 0, 0, 0}},
-
-      {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 0, 1, 1}, {0, 0, 0, 0}},
-
-      {{0, 0, 0, 1}, {0, 0, 1, 1}, {0, 0, 1, 0}, {0, 0, 0, 0}},
-
-      {{0, 0, 0, 0}, {0, 1, 1, 1}, {0, 1, 0, 0}, {0, 0, 0, 0}},
-
-      {{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 0, 0}},
-
-      {{0, 0, 0, 1}, {0, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
-
-      {{0, 1, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}},
-      // J 11
-      {{0, 0, 0, 0}, {0, 1, 1, 1}, {0, 0, 0, 1}, {0, 0, 0, 0}},
-
-      {{0, 0, 1, 1}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}},
-
-      {{0, 1, 0, 0}, {0, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
-
-      {{0, 0, 1, 0}, {0, 0, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}},
-      // T 15
-      {{0, 0, 0, 0}, {0, 1, 1, 1}, {0, 0, 1, 0}, {0, 0, 0, 0}},
-
-      {{0, 0, 1, 0}, {0, 0, 1, 1}, {0, 0, 1, 0}, {0, 0, 0, 0}},
-
-      {{0, 0, 1, 0}, {0, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}},
-
-      {{0, 0, 1, 0}, {0, 1, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}},
-  };
   for (int n = 0; n < 19; n++) {
     for (int x = 0; x < 4; x++) {
       for (int y = 0; y < 4; y++) {
-        origin[n][x][y] = matrix[n][x][y];
+        origin[n][x][y] = TETRAMINO_FIGURES[n][x][y];
       }
     }
   }
@@ -127,38 +88,10 @@ void add_tetramino_on_board(params_t *prms) {
   }
 }
 
-void add_proggress(board_t *map) {
-  // int position = 0;
-
-  // for (; map->finish[position] == '0'; position++) ;
-
-  // for (int progress_cnt = BOARD_M / ; progress_cnt > 0; progress_cnt--)
-  //     map->finish[position++] = '0';
-}
-
-
 void userInput(UserAction_t action, bool hold) {
   params_t *s_prms = getPrmsInstance();
   s_prms->sig = action;
   s_prms->hold = hold;
-}
-
-bool check_finish_state(position *frog, board_t *map) {
-  bool rc = FALSE;
-
-  if (frog->y == 1) rc = TRUE;
-
-  return rc;
-}
-
-bool check_level(board_t *map) {
-  bool rc = TRUE;
-  for (int i = 0; i < BOARD_M && rc; i++) {
-  }
-  // if (map->finish[i] != '0')
-  //     rc = FALSE;
-
-  return rc;
 }
 
 bool check_collide(position *tetramino_pos, board_t *map) {
@@ -178,14 +111,8 @@ void tetraminopos_init(position *tetramino_pos) {
   tetramino_pos->y = TETRSTART_Y;
 }
 
-void fill_finish(char *finish_line) {
-  for (int i = 0; i < BOARD_M; i++) finish_line[i] = ' ';
-
-  finish_line[BOARD_M] = '\0';
-}
-
 void stats_init(GameInfo_t *stats) {
-  char *fname = "meta.txt";
+  char *fname = SCORE_FILE;
   int N = 256;
   char buffer[N];
   FILE *fp = fopen(fname, "r");
@@ -207,34 +134,18 @@ void stats_init(GameInfo_t *stats) {
   stats->level = 1;
   MVPRINTW(3, BOARD_M + 8, "%05d", stats->high_score);
   MVPRINTW(11, BOARD_M + 11, "%02d", stats->level);
-  // MVPRINTW(23, BOARD_M + 8, "%s", stats->current_time);
   stats->speed = 1;
   stats->score = 0;
-  // stats->won = FALSE;
 }
 void new_stats_init(GameInfo_t *stats) {
-  char *fname = "meta.txt";
-  // int N = 256;
-  // char buffer[N];
-  // FILE *fp = fopen(fname, "r");
-  // if (fp != NULL) {
-  //   fgets(buffer, N, fp);
-  //   char *score = strchr(buffer, ':');
-  //   stats->high_score = atoi(++score);
-  //   fgets(buffer, N, fp);
-  //   char *level = strchr(buffer, ':');
-  //   stats->level = atoi(++level);
-  //   fclose(fp);
-  // } else {
+  char *fname = SCORE_FILE;
   if (stats->score > stats->high_score) {
     stats->high_score = stats->score;
     FILE *file = fopen(fname, "w");
     fprintf(file, "score:%d\nlevel:%d", stats->score, stats->level);
     fclose(file);
   }
-  MVPRINTW(3, BOARD_M + 8, "%05d", stats->high_score);
-  MVPRINTW(7, BOARD_M + 8, "%05d", stats->score);
-  MVPRINTW(11, BOARD_M + 11, "%02d", stats->level);
+  print_stats(stats);
 }
 
 // переписать свой код удаления линии на этот
@@ -244,7 +155,6 @@ void remove_line(board_t *map, int line) {
     map->field[i][0] = map->field[i][COLS_MAP];
   }
 }
-
 
 // #define _POSIX_C_SOURCE 199309L
 
@@ -264,28 +174,23 @@ void remove_line(board_t *map, int line) {
 
 typedef void (*action)(params_t *prms);
 
-
-action fsm_table[8][10] = {
-    {start, game_pause, exitstate, NULL, NULL, NULL, NULL, NULL, NULL},
-    {spawn, spawn, spawn, spawn, spawn, spawn, spawn, spawn, spawn, spawn},
-    {check, game_pause, exitstate, moveleft, moveright, moveup, movedown, turn_right,
-     check},
+action fsm_table[8][9] = {
+    {start, NULL, exitstate, NULL, NULL, NULL, NULL, NULL, NULL},
+    {spawn, spawn, spawn, spawn, spawn, spawn, spawn, spawn, spawn},
+    {check, game_pause, exitstate, moveleft, moveright, moveup, movedown,
+     turn_right, check},
     {shifting, shifting, exitstate, shifting, shifting, shifting, shifting,
      shifting, shifting},
-    {reach, reach, reach, reach, reach, reach, reach, reach, check},
-    {reach, reach, reach, reach, reach, reach, reach, reach, check},
-    // {collide, collide, collide, collide, collide, collide, collide},
+    // {pause_game, pause_game, pause_game, pause_game, pause_game, pause_game, pause_game, pause_game, pause_game},
+    {fell, fell, fell, fell, fell, fell, fell, fell, fell},
     {gameover, gameover, gameover, gameover, gameover, gameover, gameover,
      gameover, gameover},
     {exitstate, exitstate, exitstate, exitstate, exitstate, exitstate,
      exitstate, check, check}};
 
-// tetramino_t get_tetramino(tetramino_t* matrix_tetram[7][4], int x, int y) {
-//   tetramino_t result_tetramino;
-//   if (x == 0) fill_tetramino(matrix_tetram[x][]);
-
-//   }
-// }
+void fell(params_t *prms) {
+  
+}
 
 void print_next_tetramino(params_t *prms) {
   prms->tetramino->type++;
@@ -295,25 +200,13 @@ void print_next_tetramino(params_t *prms) {
   get_tetramino(prms->tetramino);
 }
 
-void get_next_tetramino(params_t *prms) {
-  prms->tetramino->type++;
-  get_tetramino(prms->tetramino);
-}
-
-// action tetr_matrix[7][4] = {
-//   {}
+// void get_next_tetramino(params_t *prms) {
+//   prms->tetramino->type++;
+//   get_tetramino(prms->tetramino);
 // }
 
 void sigact(UserAction_t sig) {
   action act = NULL;
-  // params_t prms;
-  // prms.stats = stats;
-  // prms.state = state;
-  // prms.map = map;
-  // prms.tetramino = map->tetramino;
-  // prms.time = time;
-  // prms.time =
-  // if (*state != FILE_ERROR_STATE)
   userInput(sig, sig == Down);
   params_t *prms = getPrmsInstance();
   act = fsm_table[*prms->state][sig];
@@ -342,31 +235,31 @@ UserAction_t get_signal(int user_input) {
   return rc;
 }
 
-// void set_high_score() {}
-
-// void save_high_score() {}
-
 int offset(params_t *prms, struct timespec *current_time) {
   int seconds = (current_time->tv_sec - (*prms).time->tv_sec) * 1000;
   int nanoseconds = (current_time->tv_nsec - (*prms).time->tv_nsec) / 1e6;
   int total_offset = seconds + nanoseconds;
-  // MVPRINTW(6, 40, "%d", seconds);
   return total_offset;
 }
 
+GameInfo_t updateCurrentState() {
+  params_t *prms = getPrmsInstance();
+  movedown(prms);
+  refresh();
+  return *prms->stats;
+}
+
 void shifting(params_t *prms) {
-  // shift_map(prms->map);
   int hours = ((long int)prms->time->tv_sec / 3600) % 24 + 3;
   int minutes = (long int)prms->time->tv_sec % 3600 / 60;
-  MVPRINTW(23, BOARD_M + 8, "%02d:%02d", hours, minutes);
+  update_time(hours, minutes);
   struct timespec current_time;
   clock_gettime(CLOCK_REALTIME, &current_time);
-  
-  int base_delay = 1000;
+
   // difficult level
-  int diff = base_delay * pow(0.8, prms->stats->level - 1);
+  int diff = BASE_DELAY * pow(0.8, prms->stats->level - 1);
   if (offset(prms, &current_time) >= diff) {
-    movedown(prms);
+    updateCurrentState();
     (*prms).time->tv_sec = current_time.tv_sec;
     (*prms).time->tv_nsec = current_time.tv_nsec;
   }
@@ -410,8 +303,8 @@ void check(params_t *prms) {
   if (count == 2) prms->stats->score += 300;
   if (count == 3) prms->stats->score += 700;
   if (count == 4) prms->stats->score += 1500;
-  if (prms->stats->level < 10)
-    prms->stats->level = prms->stats->score / 600 + 1;
+  if (prms->stats->level < MAX_LVL)
+    prms->stats->level = prms->stats->score / SCORE_FOR_NXT_LVL + 1;
   new_stats_init(prms->stats);
   refresh();
 
@@ -428,17 +321,26 @@ void start(params_t *prms) {
   *prms->state = SPAWN;
 }
 
+bool check_first_line(params_t *prms) {
+  bool result = false;
+  for (int y = 0; y <= 10 && result != true; y++) {
+    if (prms->map->field[0][y] == 1) {
+      result = true;
+    }
+  }
+  return result;
+}
+
 void spawn(params_t *prms) {
   prms->tetramino->variant = 0;
   tetraminopos_init(prms->tetramino->point);
   get_tetramino(prms->tetramino);
   print_board(*prms->map);
   print_tetramino(*prms->tetramino);
-  if (check_tetramino(*prms, *prms->tetramino) == 1) {
+  if (check_tetramino(*prms, *prms->tetramino) == 1 || check_first_line(prms)) {
     *prms->state = GAMEOVER;
   } else {
     print_next_tetramino(prms);
-    MVPRINTW(8, 33, "%02d", (*prms).tetramino->type);
     *prms->state = MOVING;
   }
 }
@@ -463,22 +365,20 @@ bool is_not_block_below(params_t *prms) {
   return result;
 }
 
-bool is_block_nearby(params_t *prms, int num) {
+bool is_block_right(params_t *prms) {
   bool result = 1;
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (prms->tetramino->figure[x][y] == 1 &&
           (prms->tetramino->point->y + y >= 9 ||
            prms->map->field[prms->tetramino->point->x + x]
-                           [prms->tetramino->point->y + y + num] == 1)) {
+                           [prms->tetramino->point->y + y + 1] == 1)) {
         result = 0;
       }
     }
   }
   return result;
 }
-
-bool is_block_right(params_t *prms) { return is_block_nearby(prms, 1); }
 
 bool is_block_left(params_t *prms) {
   bool result = 1;
@@ -498,14 +398,18 @@ bool is_block_left(params_t *prms) {
 void movedown(params_t *prms) {
   if (is_not_block_below(prms)) {
     do {
-        clear_tetramino(*prms->tetramino);
-        prms->tetramino->point->x += 1;
-        print_tetramino(*prms->tetramino);
+      clear_tetramino(*prms->tetramino);
+      prms->tetramino->point->x += 1;
+      print_tetramino(*prms->tetramino);
     } while (prms->hold && is_not_block_below(prms));
     refresh();
-    prms->hold = 0;
-}
-  if (!is_not_block_below(prms)) {
+    if (prms->hold) {
+      add_tetramino_on_board(prms);
+      prms->tetramino->type = (prms->tetramino->type + 1) % 7;
+      *prms->state = SPAWN;
+      prms->hold = 0;
+    }
+  } else {
     add_tetramino_on_board(prms);
     prms->tetramino->type = (prms->tetramino->type + 1) % 7;
     *prms->state = SPAWN;
@@ -544,16 +448,13 @@ void turn_right(params_t *prms) {
 }
 
 void game_pause(params_t *prms) {
-  MVPRINTW(1, 2, "Press ENTER or P to continue");
-  MVPRINTW(2, 8, "or ESC to exit");
-
+  print_pause();
   int user_input = 0;
   while (user_input != ESCAPE_KEY && user_input != P_KEY &&
          user_input != ENTER_KEY) {
     user_input = GET_USER_INPUT;
   }
-  MVPRINTW(1, 2, "                            ");
-  MVPRINTW(2, 8, "              ");
+  clear_pause();
   UserAction_t signal = get_signal(user_input);
   if (signal == Terminate) {
     *prms->state = EXIT_STATE;
@@ -562,24 +463,6 @@ void game_pause(params_t *prms) {
   }
 }
 
-void reach(params_t *prms) {
-  prms->stats->score += 1;
-  add_proggress(prms->map);
-  {
-    tetraminopos_init(prms->tetramino->point);
-    print_finished(prms->map);
-    *prms->state = SPAWN;
-  }
-}
-
-// void fell(params_t *prms) {
-//   if (prms->stats->fell) {
-//     tetraminopos_init(prms->tetramino->point);
-//     *prms->state = MOVING;
-//   } else
-//     *prms->state = GAMEOVER;
-// }
-
-void gameover(params_t *prms) { print_gameover(prms->stats); }
+void gameover(params_t *prms) { print_gameover(prms->stats); *prms->state = EXIT_STATE; }
 
 void exitstate(params_t *prms) { *prms->state = EXIT_STATE; }
