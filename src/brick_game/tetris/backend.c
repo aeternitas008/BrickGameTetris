@@ -7,25 +7,6 @@ params_t *getPrmsInstance() {
 }
 
 void init_prms() {
-  params_t *prms = getPrmsInstance();
-  state_t state = START;
-  GameInfo_t stats;
-  position tetramino_pos;
-  struct timespec time;
-  board_t map;
-  init_board(&map);
-  prms->map = &map;
-  tetraminopos_init(&tetramino_pos);
-  tetramino_t tetramino = {0};
-  tetramino.point = &tetramino_pos;
-  tetramino.variant = 0;
-  tetramino.type = 0;
-  get_array_figures(tetramino.array_figures);
-  stats_init(&stats);
-  prms->stats = &stats;
-  prms->state = &state;
-  prms->tetramino = &tetramino;
-  prms->time = &time;
 }
 
 void get_tetramino(tetramino_t *tetramino) {
@@ -52,12 +33,15 @@ void get_tetramino(tetramino_t *tetramino) {
 
 void get_array_figures(unsigned int origin[19][4][4]) {
   for (int n = 0; n < 19; n++) {
-    for (int x = 0; x < 4; x++) {
-      for (int y = 0; y < 4; y++) {
-        origin[n][x][y] = TETRAMINO_FIGURES[n][x][y];
-      }
-    }
+    memcpy(origin[n], TETRAMINO_FIGURES[n], sizeof(TETRAMINO_FIGURES[n]));
   }
+  // for (int n = 0; n < 19; n++) {
+  //   for (int x = 0; x < 4; x++) {
+  //     for (int y = 0; y < 4; y++) {
+  //       origin[n][x][y] = TETRAMINO_FIGURES[n][x][y];
+  //     }
+  //   }
+  // }
 }
 
 int check_new_variant(params_t prms) {
@@ -164,12 +148,12 @@ void new_stats_init(GameInfo_t *stats) {
 }
 
 // переписать свой код удаления линии на этот
-void remove_line(board_t *map, int line) {
-  for (int i = 1; i < ROWS_MAP; i += 2) {
-    memmove(&map->field[i][1], &map->field[i][0], COLS_MAP * sizeof(char));
-    map->field[i][0] = map->field[i][COLS_MAP];
-  }
-}
+// void remove_line(board_t *map, int line) {
+//   for (int i = 1; i < ROWS_MAP; i += 2) {
+//     memmove(&map->field[i][1], &map->field[i][0], COLS_MAP * sizeof(char));
+//     map->field[i][0] = map->field[i][COLS_MAP];
+//   }
+// }
 
 // #define _POSIX_C_SOURCE 199309L
 
@@ -361,6 +345,7 @@ void spawn(params_t *prms) {
 }
 
 void moveup(params_t *prms) {
+  prms->hold = prms->hold;
   // stub
 }
 

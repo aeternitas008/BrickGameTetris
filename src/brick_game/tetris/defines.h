@@ -19,10 +19,8 @@
 
 #define SCORE_FILE "brick_game/tetris/score.txt"
 
+#define INTRO_MESSAGE_LEN     21
 #define INTRO_MESSAGE "Press ENTER to Start!"
-#define INTRO_MESSAGE_LEN 21
-#define LEVEL_CNT 5
-#define LEVELNAME_MAX 25
 
 #define MAX_LVL 10
 #define BASE_DELAY 1000
@@ -36,15 +34,12 @@
 
 #define TETRSTART_X (-1)
 #define TETRSTART_Y (3)
-#define INITIAL_TIMEOUT 150
+#define INITIAL_TIMEOUT 100
 
 #define BOARD_N (ROWS_MAP + MAP_PADDING * 2)
 #define BOARD_M 30
-#define HUD_WIDTH 12
+#define HUD_WIDTH   12
 #define MAP_PADDING 3
-
-#define BANNER_N 10
-#define BANNER_M 100
 
 #define SUCCESS 0
 // #define ERROR 1
@@ -53,12 +48,10 @@
 
 #define ESCAPE_KEY 27
 #define ENTER_KEY 10
-#define SPACE_KEY 49
 #define R_KEY 35
 #define P_KEY 112
 #define P_KEY_SMALL 80
 
-#define MY_BLOCK '+'
 #define TETR_BLOCK "#"
 #define BLOCK "■"
 

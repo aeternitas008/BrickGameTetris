@@ -10,9 +10,8 @@
 
 #include <locale.h>
 
-#include "defines.h"
-#include "objects.h"
-
+// #include "defines.h"
+#include "main.h"
 #include "../../gui/cli/frontend.h"
 
 static const unsigned int TETRAMINO_FIGURES[19][4][4] = {
@@ -43,46 +42,6 @@ static const unsigned int TETRAMINO_FIGURES[19][4][4] = {
       {{0, 0, 1, 0}, {0, 1, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}},
   };
 
-typedef enum {
-  Start,
-  Pause,
-  Terminate,
-  Left,
-  Right,
-  Up,
-  Down,
-  Action
-} UserAction_t;
-
-typedef enum {
-  START = 0,
-  SPAWN,
-  MOVING,
-  SHIFTING,
-  FELL,
-  GAMEOVER,
-  EXIT_STATE
-} state_t;
-
-typedef struct {
-  int **field;
-  int **next;
-  int score;
-  int high_score;
-  int level;
-  int speed;
-  int pause;
-} GameInfo_t;
-
-typedef struct game_params {
-  GameInfo_t *stats;
-  state_t *state;
-  board_t *map;
-  struct timespec *time;
-  tetramino_t *tetramino;
-  int sig;
-  int hold;
-} params_t;
 
 UserAction_t get_signal(int user_input);
 void sigact(UserAction_t sig);

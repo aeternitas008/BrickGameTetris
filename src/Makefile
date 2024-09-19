@@ -1,9 +1,9 @@
 CC = gcc
 FLAG_C = -c
 FLAG_ER = -Wall -Werror -Wextra -std=c11
-TET_LIB_C = ./brick_game/tetris/tetris.c
+TET_LIB_C = ./brick_game/tetris/backend.c
 FRONTEND_C = ./gui/cli/frontend.c
-MAIN_C = main.c
+MAIN_C = ./brick_game/tetris/main.c
 TET_LIB_O = brick_game/tetris/backend.o
 FRONTEND_O = gui/cli/frontend.o
 FLAG_TEST = -lcheck -lm  -I/opt/homebrew/include -L/opt/homebrew/lib

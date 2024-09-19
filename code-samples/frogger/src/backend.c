@@ -93,11 +93,11 @@ void stats_init(game_stats_t *stats)
     stats->won = FALSE;
 }
 
-void shift_map(board_t *map)
-{
-    for (int i = 1; i < ROWS_MAP; i += 2)
-    {
-        memmove(&map->ways[i][1], &map->ways[i][0], COLS_MAP * sizeof(char));
-        map->ways[i][0] = map->ways[i][COLS_MAP];
-    }
-}
+// void shift_map(int **map)
+// {
+//     for (int i = 1; i < ROWS_MAP; i += 2)
+//     {
+//         memmove(&map->ways[i][1], &map->ways[i][0], COLS_MAP * sizeof(char));
+//         map->ways[i][0] = map->ways[i][COLS_MAP];
+//     }
+// }
