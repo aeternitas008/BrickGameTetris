@@ -3,10 +3,10 @@
 #include "brick_game/tetris/backend.h"
 #include "brick_game/tetris/main.h"
 
-// Тест инициализации доски
+// Инициализация доски
 START_TEST(test_init_board) {
-  board_t map;
-  init_board(&map);
+  Board_t map;
+  InitBoard(&map);
 
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
@@ -16,22 +16,144 @@ START_TEST(test_init_board) {
 }
 END_TEST
 
-// Тест добавления тетрамино на доску
-START_TEST(test_add_tetramino_on_board) {
-  board_t map;
-  tetramino_t tetramino;
-  position pos = {0, 0};
+// Инициализация доски
+START_TEST(test_variation_tetramino) {
+  Board_t map;
+  Tetramino_t tetramino;
+  Position pos = {17, 0};
 
-  init_board(&map);
+  InitBoard(&map);
+  GetArrayFigures(tetramino.array_figures);
+  tetramino.type = 2;
+  tetramino.variant = 1;
+  GetTetramino(&tetramino);
+  tetramino.type = 3;
+  GetTetramino(&tetramino);
+  tetramino.type = 4;
+  GetTetramino(&tetramino);
+  tetramino.type = 5;
+  GetTetramino(&tetramino);
+  tetramino.type = 6;
+  GetTetramino(&tetramino);
+  tetramino.point = &pos;
+
+  Params_t prms = {.tetramino = &tetramino, .map = &map};
+  int result = CheckTetramino(prms, tetramino);
+  int result2 = CheckNewVariant(prms);
+  ck_assert_int_eq(result, 0);  
+  ck_assert_int_eq(result2, 0);  
+
+TetraminoPosInit(tetramino.point);
+  ck_assert_int_eq(tetramino.point->x, -1);  
+  ck_assert_int_eq(tetramino.point->y, 3);  
+}
+END_TEST
+
+// Инициализация доски
+START_TEST(test_states_and_moves) {
+  Board_t map;
+  Tetramino_t tetramino;
+  Position pos = {15, 0};
+
+  InitBoard(&map);
+  GetArrayFigures(tetramino.array_figures);
+  tetramino.variant = 1;
+  tetramino.type = 6;
+  GetTetramino(&tetramino);
+  tetramino.point = &pos;
+  GameInfo_t stats = {0};
+    State_t state = MOVING;
+  Params_t prms = {.map = &map, .tetramino = &tetramino, .hold = 0, .state = &state, .stats = &stats};
+  MoveDown(&prms);
+  MoveLeft(&prms);
+  MoveRight(&prms);
+  int result = CheckTetramino(prms, tetramino);
+  int result2 = CheckNewVariant(prms);
+  ck_assert_int_eq(result, 0);  
+  ck_assert_int_eq(result2, 0);  
+
+  prms.hold = 1;
+  pos.y = 7;
+  MoveRight(&prms);
+  MoveRight(&prms);
+  MoveDown(&prms);
+  int result3 = CheckTetramino(prms, *prms.tetramino);
+  ck_assert_int_eq(result3, 1);
+
+  MoveDown(&prms);
+
+TetraminoPosInit(tetramino.point);
+  TurnRight(&prms);
+  ck_assert_int_eq(tetramino.point->x, -1);  
+  ck_assert_int_eq(tetramino.point->y, 3); 
+
+}
+END_TEST
+
+
+// Инициализация доски
+START_TEST(test_game_over) {
+  Board_t map;
+  Tetramino_t tetramino;
+  Position pos = {15, 0};
+  InitBoard(&map);
+  GetArrayFigures(tetramino.array_figures);
+  tetramino.variant = 1;
+  tetramino.type = 6;
+  GetTetramino(&tetramino);
+  tetramino.point = &pos;
+  GameInfo_t stats = {0};
+    State_t state = MOVING;
+  Params_t prms = {.map = &map, .tetramino = &tetramino, .hold = 0, .state = &state, .stats = &stats};
+  prms.hold = 1;
+  int y = 5;
+  for (int x = 19; x > 1; x--) {
+    map.field[x][y] = 1;
+  }
+  Spawn(&prms);
+  MoveDown(&prms);
+  MoveDown(&prms);
+  Spawn(&prms);
+  ck_assert_int_eq(*prms.state, GAMEOVER);
+
+// StartGame(&prms);
+//   ck_assert_int_eq(*prms.state, SPAWN);
+//   ck_assert_int_eq(tetramino.point->x, -1);  
+//   ck_assert_int_eq(tetramino.point->y, 3); 
+
+//getsignal
+
+//updatecurrentstate
+
+//shfting
+
+//startgame
+
+
+//gamepause
+
+//statsinit
+
+//userinput
+}
+END_TEST
+
+// Добавление тетрамино на доску
+START_TEST(test_add_tetramino_on_board) {
+  Board_t map;
+  Tetramino_t tetramino;
+  Position pos = {0, 0};
+
+  InitBoard(&map);
   tetramino.point = &pos;
   tetramino.figure[0][0] = 1;
   tetramino.figure[0][1] = 0;
   tetramino.figure[1][0] = 1;
   tetramino.figure[1][1] = 1;
 
-  params_t prms = {.tetramino = &tetramino, .map = &map};
+  Params_t prms = {.tetramino = &tetramino, .map = &map};
 
-  add_tetramino_on_board(&prms);
+    AddTetraminoOnBoard(&prms);
 
   ck_assert_int_eq(map.field[0][0], 1);
   ck_assert_int_eq(map.field[1][0], 1);
@@ -41,46 +163,42 @@ END_TEST
 
 // Тест проверки тетрамино на столкновения
 START_TEST(test_check_tetramino_collision) {
-  board_t map;
-  tetramino_t tetramino;
-  position pos = {17, 0};
+  Board_t map;
+  Tetramino_t tetramino;
+  Position pos = {17, 0};
 
-  init_board(&map);
-  get_array_figures(tetramino.array_figures);
+  InitBoard(&map);
+  GetArrayFigures(tetramino.array_figures);
   tetramino.type = 1;
   tetramino.variant = 1;
-  get_tetramino(&tetramino);
+  GetTetramino(&tetramino);
   tetramino.point = &pos;
-  // tetramino.figure[0][1] = 1;
-  // tetramino.figure[1][1] = 1;
-  // tetramino.figure[2][1] = 1;
-  // tetramino.figure[3][1] = 1;
 
-  params_t prms = {.tetramino = &tetramino, .map = &map};
+  Params_t prms = {.tetramino = &tetramino, .map = &map};
 
-  int result = check_tetramino(prms, tetramino);
-  ck_assert_int_eq(result, 1);  // Ожидаем, что столкновение произойдет
+  int result = CheckTetramino(prms, tetramino);
+  ck_assert_int_eq(result, 1);  
 }
 END_TEST
 
 // Тест проверки и удаления полной линии
 START_TEST(test_check_and_remove_full_line) {
-  board_t map;
-  init_board(&map);
+  Board_t map;
+  InitBoard(&map);
 
   // Заполняем третью линию
   for (int y = 0; y < 10; y++) {
     map.field[2][y] = 1;
   }
 
-  params_t prms = {.map = &map};
-  state_t state = MOVING;
+  Params_t prms = {.map = &map};
+  State_t state = MOVING;
   prms.state = &state;
   GameInfo_t stats = {0};
   prms.stats = &stats;
 
   ck_assert_int_eq(stats.score, 0);
-  check(&prms);
+  Check(&prms);
 
   ck_assert_int_eq(stats.score, 100);
   ck_assert_int_eq(*prms.state, SHIFTING);
@@ -97,7 +215,6 @@ START_TEST(test_check_and_remove_full_line) {
 }
 END_TEST
 
-// Главная функция для запуска тестов
 Suite *tetris_suite(void) {
   Suite *s;
   TCase *tc_core;
@@ -109,7 +226,9 @@ Suite *tetris_suite(void) {
   tcase_add_test(tc_core, test_add_tetramino_on_board);
   tcase_add_test(tc_core, test_check_tetramino_collision);
   tcase_add_test(tc_core, test_check_and_remove_full_line);
-  // tcase_add_test(tc_core, test_has_full_line);
+  tcase_add_test(tc_core, test_variation_tetramino);
+  tcase_add_test(tc_core, test_states_and_moves);
+  tcase_add_test(tc_core, test_game_over);
 
   suite_add_tcase(s, tc_core);
 

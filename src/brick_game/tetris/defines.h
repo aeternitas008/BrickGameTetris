@@ -34,7 +34,7 @@
 
 #define TETRSTART_X (-1)
 #define TETRSTART_Y (3)
-#define INITIAL_TIMEOUT 100
+#define INITIAL_TIMEOUT 50
 
 #define BOARD_N (ROWS_MAP + MAP_PADDING * 2)
 #define BOARD_M 30
@@ -42,7 +42,6 @@
 #define MAP_PADDING 3
 
 #define SUCCESS 0
-// #define ERROR 1
 
 #define NOSIG 8
 

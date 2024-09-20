@@ -4,23 +4,23 @@
 #include <unistd.h>
 #include <wchar.h>
 
-void print_overlay(void) {
+void PrintOverlay(void) {
   // chtype are = "w";
   start_color();
   init_pair(1, COLOR_CYAN, COLOR_BLACK);
   init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
   attron(COLOR_PAIR(1));
   // COLOR_PAIR(1);
-  print_rectangle(0, BOARD_N - 1, 0, BOARD_M + 1);
-  print_rectangle(0, BOARD_N - 1, BOARD_M + 2, BOARD_M + HUD_WIDTH + 5);
+  PrintRectangle(0, BOARD_N - 1, 0, BOARD_M + 1);
+  PrintRectangle(0, BOARD_N - 1, BOARD_M + 2, BOARD_M + HUD_WIDTH + 5);
 
   for (int i = 1; i <= 4; i++) {
     int a = 0;
     if (i == 4) a = 3;
-    print_rectangle(i + (i - 1) * 3, i * 4 + a, BOARD_M + 3,
+    PrintRectangle(i + (i - 1) * 3, i * 4 + a, BOARD_M + 3,
                     BOARD_M + HUD_WIDTH + 4);
   }
-  print_rectangle(21, 24, BOARD_M + 3, BOARD_M + HUD_WIDTH + 4);
+  PrintRectangle(21, 24, BOARD_M + 3, BOARD_M + HUD_WIDTH + 4);
 
   MVPRINTW(2, BOARD_M + 5, "HIGH SCORE");
   MVPRINTW(3, BOARD_M + 8, "%05d", 0);
@@ -43,7 +43,7 @@ void print_overlay(void) {
   MVPRINTW(BOARD_N / 2, (BOARD_M - INTRO_MESSAGE_LEN) / 2 + 1, INTRO_MESSAGE);
 }
 
-void print_rectangle(int top_y, int bottom_y, int left_x, int right_x) {
+void PrintRectangle(int top_y, int bottom_y, int left_x, int right_x) {
   MVADDCH(top_y, left_x, ACS_ULCORNER);
 
   int i = left_x + 1;
@@ -63,13 +63,13 @@ void print_rectangle(int top_y, int bottom_y, int left_x, int right_x) {
 }
 
 // вывод статов
-void print_stats(GameInfo_t *stats) {
+void PrintStats(GameInfo_t *stats) {
   MVPRINTW(3, BOARD_M + 8, "%05d", stats->high_score);
   MVPRINTW(7, BOARD_M + 8, "%05d", stats->score);
   MVPRINTW(11, BOARD_M + 11, "%02d", stats->level);
 }
 
-void print_field() {
+void PrintField() {
   for (int i = 3; i <= 22; i++) {
     MVPRINTW(i, 1, "[ ][ ][ ][ ][ ][ ][ ][ ][ ][ ]");
     refresh();
@@ -77,7 +77,7 @@ void print_field() {
   }
 }
 
-void print_tetramino(tetramino_t tetramino) {
+void PrintTetramino(Tetramino_t tetramino) {
   attron(COLOR_PAIR(2));
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
@@ -89,21 +89,21 @@ void print_tetramino(tetramino_t tetramino) {
   }
 }
 
-void print_pause() {
+void PrintPause() {
   MVPRINTW(1, 2, "Press ENTER or P to continue");
   MVPRINTW(2, 8, "or ESC to exit");
 }
 
-void clear_pause() {
+void ClearPause() {
   MVPRINTW(1, 2, "                            ");
   MVPRINTW(2, 8, "              ");
 }
 
-void update_time(int hours, int minutes) {
+void UpdateTime(int hours, int minutes) {
   MVPRINTW(23, BOARD_M + 8, "%02d:%02d", hours, minutes);
 }
 
-void print_next_tetr(tetramino_t tetramino) {
+void PrintFrontNextTetr(Tetramino_t tetramino) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
@@ -115,7 +115,7 @@ void print_next_tetr(tetramino_t tetramino) {
   }
 }
 
-void clear_tetramino(tetramino_t tetramino) {
+void ClearTetramino(Tetramino_t tetramino) {
   for (int x = 0; x < 4; x++) {
     for (int y = 0; y < 4; y++) {
       if (tetramino.figure[x][y]) {
@@ -126,7 +126,7 @@ void clear_tetramino(tetramino_t tetramino) {
   }
 }
 
-void print_board(board_t map) {
+void PrintBoard(Board_t map) {
   for (int x = 0; x < 20; x++) {
     for (int y = 0; y < 10; y++) {
       if (map.field[x][y] == 1) {
@@ -138,7 +138,7 @@ void print_board(board_t map) {
   }
 }
 
-void print_gameover(GameInfo_t *stats) {
+void PrintGameOver(GameInfo_t *stats) {
   MVPRINTW(1, 10, "GAME OVER");
   MVPRINTW(2, 8, "%s %d", "Your score: ", stats->score);
   refresh();

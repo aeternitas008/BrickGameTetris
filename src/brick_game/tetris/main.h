@@ -8,19 +8,19 @@
 typedef struct {
   int x;
   int y;
-} position;
+} Position;
 
 typedef struct {
-  position *point;
+  Position *point;
   int type;
   int variant;
   unsigned int figure[4][4];
   unsigned int array_figures[19][4][4];
-} tetramino_t;
+} Tetramino_t;
 
 typedef struct {
   int field[ROWS_MAP][COLS_MAP];
-} board_t;
+} Board_t;
 
 typedef enum {
   Start,
@@ -38,10 +38,9 @@ typedef enum {
   SPAWN,
   MOVING,
   SHIFTING,
-  FELL,
   GAMEOVER,
   EXIT_STATE
-} state_t;
+} State_t;
 
 typedef struct {
   int **field;
@@ -53,15 +52,15 @@ typedef struct {
   int pause;
 } GameInfo_t;
 
-typedef struct game_params {
+typedef struct GameParams {
   GameInfo_t *stats;
-  state_t *state;
-  board_t *map;
+  State_t *state;
+  Board_t *map;
   struct timespec *time;
-  tetramino_t *tetramino;
+  Tetramino_t *tetramino;
   int sig;
   int hold;
-} params_t;
+} Params_t;
 
 // For ubuntu need to realise clock_gettime
 // #define _POSIX_C_SOURCE 199309L

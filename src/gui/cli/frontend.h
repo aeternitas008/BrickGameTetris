@@ -4,17 +4,17 @@
 #include "../../brick_game/tetris/main.h"
 // #include "../../brick_game/tetris/defines.h"
 
-void print_overlay(void);
-void print_rectangle(int top_y, int bottom_y, int left_x, int right_x);
-void print_stats(GameInfo_t *stats);
-void print_field();
-void print_board(board_t map);
-void print_gameover(GameInfo_t *stats);
-void print_tetramino(tetramino_t tetramino);
-void clear_tetramino(tetramino_t tetramino);
+void PrintOverlay(void);
+void PrintRectangle(int top_y, int bottom_y, int left_x, int right_x);
+void PrintStats(GameInfo_t *stats);
+void PrintField();
+void PrintBoard(Board_t map);
+void PrintGameOver(GameInfo_t *stats);
+void PrintTetramino(Tetramino_t tetramino);
+void ClearTetramino(Tetramino_t tetramino);
 
-void print_next_tetr(tetramino_t tetramino);
-void print_pause();
-void clear_pause();
-void update_time(int hours, int minutes);
+void PrintFrontNextTetr(Tetramino_t tetramino);
+void PrintPause();
+void ClearPause();
+void UpdateTime(int hours, int minutes);
 #endif

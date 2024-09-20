@@ -1,25 +1,23 @@
 #include "backend.h"
 
-void game_loop() {
+void GameLoop() {
   bool no_break = TRUE;
   int signal = 0;
-  // params_t *prms = getPrmsInstance();
-
-  params_t *prms = getPrmsInstance();
-  state_t state = START;
+  Params_t *prms = GetPrmsInstance();
+  State_t state = START;
   GameInfo_t stats;
-  position tetramino_pos;
+  Position tetramino_pos;
   struct timespec time;
-  board_t map;
-  init_board(&map);
+  Board_t map;
+  InitBoard(&map);
   prms->map = &map;
-  tetraminopos_init(&tetramino_pos);
-  tetramino_t tetramino = {0};
+  TetraminoPosInit(&tetramino_pos);
+  Tetramino_t tetramino = {0};
   tetramino.point = &tetramino_pos;
   tetramino.variant = 0;
   tetramino.type = 0;
-  get_array_figures(tetramino.array_figures);
-  stats_init(&stats);
+  GetArrayFigures(tetramino.array_figures);
+  StatsInit(&stats);
   prms->stats = &stats;
   prms->state = &state;
   prms->tetramino = &tetramino;
@@ -27,7 +25,7 @@ void game_loop() {
 
   while (no_break) {
     if (state == MOVING || state == START) signal = GET_USER_INPUT;
-    sigact(get_signal(signal));
+    SigAct(GetSignal(signal));
     if (state == EXIT_STATE) no_break = FALSE;
   }
 }
@@ -35,8 +33,8 @@ void game_loop() {
 int main(void) {
   setlocale(LC_CTYPE, "");
   WIN_INIT(INITIAL_TIMEOUT);
-  print_overlay();
-  game_loop();
+  PrintOverlay();
+  GameLoop();
   endwin();
   return SUCCESS;
 }
