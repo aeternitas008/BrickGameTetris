@@ -19,7 +19,7 @@
 
 #define SCORE_FILE "brick_game/tetris/score.txt"
 
-#define INTRO_MESSAGE_LEN     21
+#define INTRO_MESSAGE_LEN 21
 #define INTRO_MESSAGE "Press ENTER to Start!"
 
 #define MAX_LVL 10
@@ -38,7 +38,7 @@
 
 #define BOARD_N (ROWS_MAP + MAP_PADDING * 2)
 #define BOARD_M 30
-#define HUD_WIDTH   12
+#define HUD_WIDTH 12
 #define MAP_PADDING 3
 
 #define SUCCESS 0

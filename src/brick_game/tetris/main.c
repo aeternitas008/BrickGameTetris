@@ -5,7 +5,6 @@ void game_loop() {
   int signal = 0;
   // params_t *prms = getPrmsInstance();
 
-
   params_t *prms = getPrmsInstance();
   state_t state = START;
   GameInfo_t stats;

@@ -1,8 +1,8 @@
+#include "frontend.h"
+
 #include <locale.h>
 #include <unistd.h>
 #include <wchar.h>
-
-#include "frontend.h"
 
 void print_overlay(void) {
   // chtype are = "w";
@@ -89,12 +89,12 @@ void print_tetramino(tetramino_t tetramino) {
   }
 }
 
-void print_pause(){
+void print_pause() {
   MVPRINTW(1, 2, "Press ENTER or P to continue");
   MVPRINTW(2, 8, "or ESC to exit");
 }
 
-void clear_pause(){
+void clear_pause() {
   MVPRINTW(1, 2, "                            ");
   MVPRINTW(2, 8, "              ");
 }

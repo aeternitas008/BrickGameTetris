@@ -1,13 +1,11 @@
-
 #include "backend.h"
 
-params_t *getPrmsInstance() { 
+params_t *getPrmsInstance() {
   static params_t s_prms;
-  return &s_prms; 
+  return &s_prms;
 }
 
-void init_prms() {
-}
+void init_prms() {}
 
 void get_tetramino(tetramino_t *tetramino) {
   int key = 0;
@@ -35,13 +33,6 @@ void get_array_figures(unsigned int origin[19][4][4]) {
   for (int n = 0; n < 19; n++) {
     memcpy(origin[n], TETRAMINO_FIGURES[n], sizeof(TETRAMINO_FIGURES[n]));
   }
-  // for (int n = 0; n < 19; n++) {
-  //   for (int x = 0; x < 4; x++) {
-  //     for (int y = 0; y < 4; y++) {
-  //       origin[n][x][y] = TETRAMINO_FIGURES[n][x][y];
-  //     }
-  //   }
-  // }
 }
 
 int check_new_variant(params_t prms) {
@@ -119,57 +110,18 @@ void stats_init(GameInfo_t *stats) {
     fgets(buffer, N, fp);
     char *score = strchr(buffer, ':');
     stats->high_score = atoi(++score);
-    fgets(buffer, N, fp);
-    char *level = strchr(buffer, ':');
-    stats->level = atoi(++level);
     fclose(fp);
   } else {
     FILE *file = fopen(fname, "w");
-    fprintf(file, "score:0\nlevel:1");
+    fprintf(file, "score:0");
     fclose(file);
     stats->high_score = 0;
-    stats->level = 1;
   }
   stats->level = 1;
-  MVPRINTW(3, BOARD_M + 8, "%05d", stats->high_score);
-  MVPRINTW(11, BOARD_M + 11, "%02d", stats->level);
   stats->speed = 1;
   stats->score = 0;
-}
-void new_stats_init(GameInfo_t *stats) {
-  char *fname = SCORE_FILE;
-  if (stats->score > stats->high_score) {
-    stats->high_score = stats->score;
-    FILE *file = fopen(fname, "w");
-    fprintf(file, "score:%d\nlevel:%d", stats->score, stats->level);
-    fclose(file);
-  }
   print_stats(stats);
 }
-
-// переписать свой код удаления линии на этот
-// void remove_line(board_t *map, int line) {
-//   for (int i = 1; i < ROWS_MAP; i += 2) {
-//     memmove(&map->field[i][1], &map->field[i][0], COLS_MAP * sizeof(char));
-//     map->field[i][0] = map->field[i][COLS_MAP];
-//   }
-// }
-
-// #define _POSIX_C_SOURCE 199309L
-
-// for ubuntu
-//  #define CLOCK_REALTIME 0
-
-// int clock_gettime(int clk_id, struct timespec *tp) {
-//   struct timeval now;
-//   int rv = gettimeofday(&now, NULL);
-//   if (rv == 0) {
-//     tp->tv_sec = now.tv_sec;
-//     tp->tv_nsec =
-//         now.tv_usec * 1000;  // Конвертируем микросекунды в наносекунды
-//   }
-//   return rv;
-// }
 
 typedef void (*action)(params_t *prms);
 
@@ -186,9 +138,7 @@ action fsm_table[8][9] = {
     {exitstate, exitstate, exitstate, exitstate, exitstate, exitstate,
      exitstate, check, check}};
 
-void fell(params_t *prms) {
-  prms->hold = prms->hold;
-}
+void fell(params_t *prms) { prms->hold = prms->hold; }
 
 void print_next_tetramino(params_t *prms) {
   prms->tetramino->type++;
@@ -197,11 +147,6 @@ void print_next_tetramino(params_t *prms) {
   prms->tetramino->type--;
   get_tetramino(prms->tetramino);
 }
-
-// void get_next_tetramino(params_t *prms) {
-//   prms->tetramino->type++;
-//   get_tetramino(prms->tetramino);
-// }
 
 void sigact(UserAction_t sig) {
   action act = NULL;
@@ -294,6 +239,17 @@ void check_lines(int *count, params_t *prms) {
   }
 }
 
+void new_stats_save_init(GameInfo_t *stats) {
+  char *fname = SCORE_FILE;
+  if (stats->score > stats->high_score) {
+    stats->high_score = stats->score;
+    FILE *file = fopen(fname, "w");
+    fprintf(file, "score:%d", stats->score);
+    fclose(file);
+  }
+  print_stats(stats);
+}
+
 void check(params_t *prms) {
   int count = 0;
   check_lines(&count, prms);
@@ -303,7 +259,7 @@ void check(params_t *prms) {
   if (count == 4) prms->stats->score += 1500;
   if (prms->stats->level < MAX_LVL)
     prms->stats->level = prms->stats->score / SCORE_FOR_NXT_LVL + 1;
-  new_stats_init(prms->stats);
+  new_stats_save_init(prms->stats);
   refresh();
 
   if (*prms->state != SPAWN) {
@@ -335,10 +291,10 @@ void spawn(params_t *prms) {
   tetraminopos_init(prms->tetramino->point);
   get_tetramino(prms->tetramino);
   print_board(*prms->map);
-  print_tetramino(*prms->tetramino);
   if (check_tetramino(*prms, *prms->tetramino) == 1 || check_first_line(prms)) {
     *prms->state = GAMEOVER;
   } else {
+    print_tetramino(*prms->tetramino);
     print_next_tetramino(prms);
     *prms->state = MOVING;
   }
@@ -463,6 +419,9 @@ void game_pause(params_t *prms) {
   }
 }
 
-void gameover(params_t *prms) { print_gameover(prms->stats); *prms->state = EXIT_STATE; }
+void gameover(params_t *prms) {
+  print_gameover(prms->stats);
+  *prms->state = EXIT_STATE;
+}
 
 void exitstate(params_t *prms) { *prms->state = EXIT_STATE; }

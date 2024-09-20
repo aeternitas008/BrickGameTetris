@@ -6,7 +6,7 @@ FRONTEND_C = ./gui/cli/frontend.c
 MAIN_C = ./brick_game/tetris/main.c
 TET_LIB_O = brick_game/tetris/backend.o
 FRONTEND_O = gui/cli/frontend.o
-FLAG_TEST = -lcheck -lm  -I/opt/homebrew/include -L/opt/homebrew/lib
+FLAG_TEST = -lcheck -lm  -I/opt/homebrew/include
 
 all: clean uninstall tetris
 
@@ -20,8 +20,8 @@ install: tetris
 uninstall:
 	-rm -rf ./game
 
-tetris_lib.a: $(TET_LIB_O)
-	ar rc tetris_lib.a $(TET_LIB_O)
+tetris_lib.a: $(TET_LIB_O) $(FRONTEND_O)
+	ar rc tetris_lib.a $(TET_LIB_O) $(FRONTEND_O)
 	ranlib tetris_lib.a
 
 $(TET_LIB_O): $(TET_LIB_C)
@@ -38,11 +38,11 @@ clean: uninstall
 
 
 test: clean tetris_lib.a
-	$(CC) -g --coverage $(FLAG_ER) test.c -o test tetris_lib.a $(FLAG_TEST)
+	$(CC) -g --coverage $(FLAG_ER) test.c -o test tetris_lib.a -lncurses $(FLAG_TEST)
 	./test
 
 gcov_report: test
-	$(CC) --coverage $(TET_LIB_C) test.c -o greport $(FLAG_TEST)
+	$(CC) --coverage $(TET_LIB_C) $(FRONTEND_C) test.c -o greport $(FLAG_TEST) -lncurses
 	./greport
 	lcov -t "test" -o tetris.info --no-external -c -d .
 	genhtml -o ./report tetris.info
@@ -55,14 +55,12 @@ dvi:
 	doxygen -g
 
 style:
-	cp ../materials/linters/.clang-format .
-	find .. -name "*.c" -exec clang-format -i {} \;
-	find .. -name "*.h" -exec clang-format -i {} \;
-	rm -rf .clang-format
+	find .. -name "*.c" -exec clang-format -i -style=google {} \;
+	find .. -name "*.h" -exec clang-format -i -style=google {} \;
 
 style_test:
 	cp ../materials/linters/.clang-format .
-	find .. -name "*.c" -exec clang-format -n {} \;
-	find .. -name "*.h" -exec clang-format -n {} \;
+	find .. -name "*.c" -exec clang-format -n -style=google {} \;
+	find .. -name "*.h" -exec clang-format -n -style=google {} \;
 	rm -rf .clang-format
 
