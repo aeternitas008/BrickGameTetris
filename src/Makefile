@@ -11,7 +11,8 @@ FLAG_TEST = -lcheck -lm  -I/opt/homebrew/include
 all: clean uninstall tetris
 
 tetris: tetris_lib.a $(FRONTEND_O) $(MAIN_C)
-	$(CC) $(FLAG_ER) -o tetris $(MAIN_C) $(FRONTEND_O) tetris_lib.a -lncurses
+	mkdir ./game
+	$(CC) $(FLAG_ER) -o ./game/tetris $(MAIN_C) $(FRONTEND_O) tetris_lib.a -lncurses
 
 install: tetris
 	mkdir ./game
@@ -33,23 +34,23 @@ $(FRONTEND_O): $(FRONTEND_C)
 clean: uninstall 
 	-rm -rf *.o *.html *.gcda *.gcno *.css *.a *.gcov *.info *.out *.cfg
 	-rm -f test tests greport Doxyfile tetris.install.tar.gz
-	-rm -rf report test.d* tetris
+	-rm -rf report test.d* tetris out/*
 	find . -name "*.o" -type f -delete
 
 
 test: clean tetris_lib.a
-	$(CC) -g --coverage $(FLAG_ER) test.c -o test tetris_lib.a -lncurses $(FLAG_TEST)
-	./test
+	$(CC) -g --coverage $(FLAG_ER) test.c -o ./out/test tetris_lib.a -lncurses $(FLAG_TEST)
+	./out/test
 
 gcov_report: test
-	$(CC) --coverage $(TET_LIB_C) $(FRONTEND_C) test.c -o greport $(FLAG_TEST) -lncurses
-	./greport
+	$(CC) --coverage $(TET_LIB_C) $(FRONTEND_C) test.c -o ./out/greport $(FLAG_TEST) -lncurses
+	./out/greport
 	lcov -t "test" -o tetris.info --no-external -c -d .
 	genhtml -o ./report tetris.info
 	open ./report/index.html
 
 dist:
-	tar -czf tetris.install.tar.gz ./*
+	tar -czf ./out/tetris.install.tar.gz ./* 
 
 dvi:
 	doxygen -g
