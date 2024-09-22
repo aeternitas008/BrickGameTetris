@@ -33,8 +33,8 @@ $(FRONTEND_O): $(FRONTEND_C)
 
 clean: uninstall 
 	-rm -rf *.o *.html *.gcda *.gcno *.css *.a *.gcov *.info *.out *.cfg
-	-rm -f test tests greport Doxyfile tetris.install.tar.gz
-	-rm -rf report test.d* tetris out/*
+	-rm -f test tests greport tetris.install.tar.gz
+	-rm -rf report test.d* tetris out/* doxygen/html doxygen/result
 	find . -name "*.o" -type f -delete
 
 
@@ -53,7 +53,7 @@ dist:
 	tar -czf ./out/tetris.install.tar.gz ./* 
 
 dvi:
-	doxygen -g
+	cd doxygen && doxygen
 
 style:
 	find .. -name "*.c" -exec clang-format -i -style=google {} \;

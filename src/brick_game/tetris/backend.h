@@ -12,6 +12,13 @@
 #include "../../gui/cli/frontend.h"
 #include "main.h"
 
+/**
+ * @file backend.h Файл имеет основные функции по реализации игры, а именно
+ * чтение и обработку ключей, перемещение тетромино по полю и реализацию базовой
+ * механики игры.
+ *
+ */
+
 static const unsigned int TETRAMINO_FIGURES[19][4][4] = {
     {{0, 0, 0, 0}, {0, 1, 1, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}},
 
@@ -50,22 +57,71 @@ void TetraminoPosInit(Position *tetramino_pos);
 void InitBoard(Board_t *map);
 
 int CheckNewVariant(Params_t prms);
+
+/**
+ * @brief Заполняет текущую фигуру тетрамино на основе его типа и варианта.
+ *
+ * Функция извлекает фигуру тетрамино на основе его типа и варианта,
+ * и копирует её в поле figure структуры Tetramino_t.
+ *
+ * @param tetramino Указатель на структуру Tetramino_t, в которую будет
+ * скопирована фигура.
+ */
 int CheckTetramino(Params_t prms, Tetramino_t tetramino);
 void GetArrayFigures(unsigned int origin[19][4][4]);
 
+/**
+ * @brief Возвращает указатель на статический экземпляр структуры Params_t.
+ *
+ * Функция инициализирует и возвращает указатель на статический объект Params_t.
+ * Используется для работы с параметрами игры в течение всего времени её
+ * выполнения.
+ *
+ * @return Указатель на структуру Params_t.
+ */
 Params_t *GetPrmsInstance();
 
 void userInput(UserAction_t action, bool hold);
 GameInfo_t updateCurrentState();
 
+/**
+ * @brief Заполняет текущую фигуру тетрамино на основе его типа и варианта.
+ *
+ * Функция извлекает фигуру тетрамино на основе его типа и варианта,
+ * и копирует её в поле figure структуры Tetramino_t.
+ *
+ * @param tetramino Указатель на структуру Tetramino_t, в которую будет
+ * скопирована фигура.
+ */
 void GetTetramino(Tetramino_t *tetramino);
 
 void StartGame(Params_t *prms);
 void Spawn(Params_t *prms);
 void MoveUp(Params_t *prms);
+
+/**
+ * @brief Сдвигает тетрамино вниз, если под ним нет блокирующих элементов.
+ *
+ * Функция проверяет, можно ли сдвинуть тетрамино вниз. Если можно, тетрамино
+ * сдвигается. Если оно достигает препятствия или дна поля, тетрамино
+ * добавляется на игровую доску.
+ *
+ * @param prms Указатель на структуру Params_t с параметрами игры.
+ */
 void MoveDown(Params_t *prms);
 void MoveRight(Params_t *prms);
 void MoveLeft(Params_t *prms);
+
+/**
+ * @brief Обновляет положение тетрамино на поле через определённый интервал
+ * времени.
+ *
+ * Функция вычисляет прошедшее время и сдвигает тетрамино вниз, если прошло
+ * достаточно времени с момента последнего обновления. Уровень сложности игры
+ * также влияет на скорость падения.
+ *
+ * @param prms Указатель на структуру Params_t с параметрами игры.
+ */
 void Shifting(Params_t *prms);
 
 void GameOver(Params_t *prms);

@@ -60,7 +60,6 @@ void PrintRectangle(int top_y, int bottom_y, int left_x, int right_x) {
   MVADDCH(bottom_y, i, ACS_LRCORNER);
 }
 
-// вывод статов
 void PrintStats(GameInfo_t *stats) {
   MVPRINTW(3, BOARD_M + 8, "%05d", stats->high_score);
   MVPRINTW(7, BOARD_M + 8, "%05d", stats->score);
@@ -92,6 +91,9 @@ void PrintPause() {
   MVPRINTW(2, 8, "or ESC to exit");
 }
 
+/**
+ * @brief Очищает сообщение о паузе с экрана.
+ */
 void ClearPause() {
   MVPRINTW(1, 2, "                            ");
   MVPRINTW(2, 8, "              ");
