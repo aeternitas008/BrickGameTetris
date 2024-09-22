@@ -30,10 +30,10 @@ $(TET_LIB_O): $(TET_LIB_C)
 $(FRONTEND_O): $(FRONTEND_C)
 	$(CC) $(FLAG_C) $(FLAG_ER) $(FRONTEND_C) -o $(FRONTEND_O)
 
-clean: uninstall
+clean: uninstall 
 	-rm -rf *.o *.html *.gcda *.gcno *.css *.a *.gcov *.info *.out *.cfg
 	-rm -f test tests greport Doxyfile tetris.install.tar.gz
-	-rm -rf report test.d*
+	-rm -rf report test.d* tetris
 	find . -name "*.o" -type f -delete
 
 

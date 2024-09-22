@@ -1,6 +1,5 @@
 #include "backend.h"
 
-
 typedef void (*action)(Params_t *prms);
 
 Params_t *GetPrmsInstance() {
@@ -112,7 +111,6 @@ void StatsInit(GameInfo_t *stats) {
   PrintStats(stats);
 }
 
-
 void PrintNextTetramino(Params_t *prms) {
   prms->tetramino->type++;
   GetTetramino(prms->tetramino);
@@ -122,18 +120,17 @@ void PrintNextTetramino(Params_t *prms) {
 }
 
 void SigAct(UserAction_t sig) {
-  
   action fsm_table[7][9] = {
-    {StartGame, NULL, ExitState, NULL, NULL, NULL, NULL, NULL, NULL},
-    {Spawn, Spawn, Spawn, Spawn, Spawn, Spawn, Spawn, Spawn, Spawn},
-    {Check, GamePause, ExitState, MoveLeft, MoveRight, MoveUp, MoveDown,
-     TurnRight, Check},
-    {Shifting, Shifting, ExitState, Shifting, Shifting, Shifting, Shifting,
-     Shifting, Shifting},
-    {GameOver, GameOver, GameOver, GameOver, GameOver, GameOver, GameOver,
-     GameOver, GameOver},
-    {ExitState, ExitState, ExitState, ExitState, ExitState, ExitState,
-     ExitState, Check, Check}};
+      {StartGame, NULL, ExitState, NULL, NULL, NULL, NULL, NULL, NULL},
+      {Spawn, Spawn, Spawn, Spawn, Spawn, Spawn, Spawn, Spawn, Spawn},
+      {Check, GamePause, ExitState, MoveLeft, MoveRight, MoveUp, MoveDown,
+       TurnRight, Check},
+      {Shifting, Shifting, ExitState, Shifting, Shifting, Shifting, Shifting,
+       Shifting, Shifting},
+      {GameOver, GameOver, GameOver, GameOver, GameOver, GameOver, GameOver,
+       GameOver, GameOver},
+      {ExitState, ExitState, ExitState, ExitState, ExitState, ExitState,
+       ExitState, Check, Check}};
 
   action act = NULL;
   userInput(sig, sig == Down);
@@ -164,9 +161,9 @@ UserAction_t GetSignal(int user_input) {
   return rc;
 }
 
-int Offset(Params_t *prms, struct timespec *current_time) {
-  int seconds = (current_time->tv_sec - (*prms).time->tv_sec) * 1000;
-  int nanoseconds = (current_time->tv_nsec - (*prms).time->tv_nsec) / 1e6;
+int Offset(struct timespec last_time, struct timespec current_time) {
+  int seconds = (current_time.tv_sec - last_time.tv_sec) * 1000;
+  int nanoseconds = (current_time.tv_nsec - last_time.tv_nsec) / 1e6;
   int total_offset = seconds + nanoseconds;
   return total_offset;
 }
@@ -187,10 +184,10 @@ void Shifting(Params_t *prms) {
 
   // difficult level
   int delay = BASE_DELAY * pow(0.8, prms->stats->level - 1);
-  if (Offset(prms, &current_time) >= delay) {
+  if (Offset(*prms->time, current_time) >= delay) {
     updateCurrentState();
-    (*prms).time->tv_sec = current_time.tv_sec;
-    (*prms).time->tv_nsec = current_time.tv_nsec;
+    prms->time->tv_sec = current_time.tv_sec;
+    prms->time->tv_nsec = current_time.tv_nsec;
   }
 
   if (*prms->state != SPAWN) {

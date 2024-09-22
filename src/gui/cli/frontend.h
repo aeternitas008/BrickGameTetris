@@ -2,7 +2,6 @@
 #define FRONTEND_H
 
 #include "../../brick_game/tetris/main.h"
-// #include "../../brick_game/tetris/defines.h"
 
 void PrintOverlay(void);
 void PrintRectangle(int top_y, int bottom_y, int left_x, int right_x);

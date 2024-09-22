@@ -62,7 +62,7 @@ typedef struct GameParams {
   int hold;
 } Params_t;
 
-// For ubuntu need to realise clock_gettime
+// For ubuntu if need to realise clock_gettime
 // #define _POSIX_C_SOURCE 199309L
 //  #define CLOCK_REALTIME 0
 // int clock_gettime(int clk_id, struct timespec *tp) {

@@ -46,8 +46,6 @@ void SigAct(UserAction_t sig);
 void AddTetraminoOnBoard(Params_t *prms);
 void StatsInit(GameInfo_t *stats);
 
-// void new_stats_save_init(GameInfo_t *stats);
-
 void TetraminoPosInit(Position *tetramino_pos);
 void InitBoard(Board_t *map);
 

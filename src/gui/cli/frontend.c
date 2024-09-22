@@ -5,12 +5,10 @@
 #include <wchar.h>
 
 void PrintOverlay(void) {
-  // chtype are = "w";
   start_color();
   init_pair(1, COLOR_CYAN, COLOR_BLACK);
   init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
   attron(COLOR_PAIR(1));
-  // COLOR_PAIR(1);
   PrintRectangle(0, BOARD_N - 1, 0, BOARD_M + 1);
   PrintRectangle(0, BOARD_N - 1, BOARD_M + 2, BOARD_M + HUD_WIDTH + 5);
 
@@ -18,7 +16,7 @@ void PrintOverlay(void) {
     int a = 0;
     if (i == 4) a = 3;
     PrintRectangle(i + (i - 1) * 3, i * 4 + a, BOARD_M + 3,
-                    BOARD_M + HUD_WIDTH + 4);
+                   BOARD_M + HUD_WIDTH + 4);
   }
   PrintRectangle(21, 24, BOARD_M + 3, BOARD_M + HUD_WIDTH + 4);
 
@@ -142,5 +140,5 @@ void PrintGameOver(GameInfo_t *stats) {
   MVPRINTW(1, 10, "GAME OVER");
   MVPRINTW(2, 8, "%s %d", "Your score: ", stats->score);
   refresh();
-  napms(5000);
+  napms(3000);
 }
