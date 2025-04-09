@@ -11,26 +11,26 @@ Har bir o’yin kutubxonasida foydalanuvchi ma’lumotlarini qabul qiladigan fun
 `updateCurrentState` funksiyasi interfeysda ko’rsatish uchun ma’lumotlarni olish uchun mo’ljallangan. U o’yinning joriy holati haqida ma’lumotni o’z ichiga olgan tuzilmani qaytaradi. Masalan, tetris uchun taymerning tugashi shaklning bir qator pastga siljishiga olib keladi. Interfeysni yangilab turish uchun ushbu funktsiyani interfeysdan ma’lum vaqt oralig’ida chaqirish kerak.
 
 ```c
-typedef enum {
-    Start,
-    Pause,
-    Terminate,
-    Left,
-    Right,
-    Up,
-    Down,
-    Action
-} UserAction_t;
+typedef enum UserAction_t {
+  Start,
+  Pause,
+  Terminate,
+  Left,
+  Right,
+  Up,
+  Down,
+  Action
+};
 
-typedef struct {
-    int **field;
-    int **next;
-    int score;
-    int high_score;
-    int level;
-    int speed;
-    int pause;
-} GameInfo_t;
+typedef struct GameInfo_t {
+  int **field;
+  int **next;
+  int score;
+  int high_score;
+  int level;
+  int speed;
+  int pause;
+};
 
 void userInput(UserAction_t action, bool hold);
 

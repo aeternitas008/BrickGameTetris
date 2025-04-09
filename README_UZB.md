@@ -110,7 +110,7 @@ Siz BrickGame v1.0 aka Tetris dasturini amalga oshirishingiz kerak:
 - Dastur interfeysi kodi `src/gui/cli` papkasida joylashgan bo'lishi kerak
 - Dastur tuzilmasi GNU dasturlari uchun standart maqsadlar to'plamiga ega Makefile yordamida sozlanishi kerak: all, install, uninstall, clean, dvi, dist, test, gcov_report. O'rnatish boshqa har qanday ixtiyoriy katalogda amalga oshirilishi kerak.
 - Dastur tuzilgan dasturlash tamoyillari asosida ishlab chiqilishi kerak.
-- Kod yozishda Google Stylega amal qiling.
+- Kod yozishda C++ uchun Google Style ((havola)[(https://google.github.io/styleguide/cppguide.html)]) ga amal qiling.
 - Kutubxona, `check` kutubxonasidan foydalangan holda unit testlar bilan qoplangan bo'lishi kerak (testlar ОС Darwin/Ubuntu ga o'tkazilishi kerak). Kutubxonaning testlar tomonidan o'yin mantig'i bilan qamrab olinishi kamida 80 foiz bo'lishi kerak.
 - O'yinda quyidagi mexanika mavjud bo'lishi kerak:
   - Shakllarni aylantirish;
@@ -131,7 +131,7 @@ Siz BrickGame v1.0 aka Tetris dasturini amalga oshirishingiz kerak:
   - Harakat (shaklning aylanishi).
 - O'yin maydoni konsol o'yin maydonining o'lchamlariga mos kelishi kerak: kengligi o'n "piksel" va balandligi yigirma "piksel".
 - Shakl maydonning pastki chegarasiga yetib borganidan keyin yoki boshqa shaklga tekkanidan keyin to‘xtashi kerak. Shundan so'ng, prevyuda ko'rsatilgan keyingi shakl hosil bo'lishi lozim.
-- Kutubxona interfeysi materials/library-specification_RUS.md da joylashgan tavsifga mos kelishi kerak.
+- Kutubxona interfeysi [bu yerda](./materials/library-specification_UZB.md) joylashgan tavsifga mos kelishi kerak.
 - Foydalanuvchi interfeysi o'yin maydonini va qo'shimcha ma'lumotlarni ko'rsatishni qo'llab-quvvatlashi kerak.
 - Foydalanilayotgan SAni (uning holatlari va barcha mumkin bo'lgan o'tishlarini) tavsiflovchi har qanday formatdagi diagramma tayyorlang.
 

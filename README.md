@@ -5,18 +5,18 @@ Summary: In this project, you need to implement the Tetris game in the C program
 
 # Contents
 
-- [BrickGameTetris](#brickgame-tetris)
-  - [Contents](#contents)
+- [BrickGame Tetris](#brickgame-tetris)
+- [Contents](#contents)
   - [Introduction](#introduction)
-- [Chapter I](#chapter-i)
-  - [General Information](#general-information)
+  - [Chapter I ](#chapter-i-)
+- [General information](#general-information)
     - [BrickGame](#brickgame)
     - [History](#history)
-    - [Finite-state machines](#fine-states-machines)
+    - [Finite-state machines](#finite-state-machines)
     - [Frogger](#frogger)
     - [Tetris](#tetris)
-- [Chapter II](#chapter-ii)
-  - [Project Requirments](#project-requirements)
+  - [Chapter II ](#chapter-ii-)
+  - [Project Requirements](#project-requirements)
     - [Part 1. Main task](#part-1-main-task)
     - [Part 2. Bonus. Scoring and game record](#part-2-bonus-scoring-and-game-record)
     - [Part 3. Bonus. Level mechanics](#part-3-bonus-level-mechanics)
@@ -110,7 +110,7 @@ You need to implement the BrickGame v1.0 aka Tetris program:
 - The program interface code must be in the `src/gui/cli` folder.
 - The program must be built using a Makefile with the standard set of targets for GNU programs: all, install, uninstall, clean, dvi, dist, test, gcov_report. The installation directory can be arbitrary.
 - The program must be developed according to the principles of structured programming.
-- Follow Google Style when writing code.
+- Follow Google Style for C++ when writing code ([link](https://google.github.io/styleguide/cppguide.html)).
 - Prepare full coverage of the library with unit tests, using the `check` library (tests must run on Darwin/Ubuntu OS). The coverage of the library with game logic with tests must be at least 80 percent.
 - The following mechanics must be present in the game:
   - Rotation of pieces;
@@ -131,7 +131,7 @@ You need to implement the BrickGame v1.0 aka Tetris program:
   - Action (piece rotation).
 - The playing area must be the same size as the console's playing field — ten "pixels" wide and twenty "pixels" high.
 - When the figure reaches the lower boundary of the board or touches another figure, it must stop. After that, the next piece, shown in the preview, is generated.
-- The library interface must match the description in materials/library-specification.md.
+- The library interface must match the [description](./materials/library-specification.md).
 - The UI must support rendering of the playing field and additional information.
 - Prepare a diagram in any format describing the FSM used (its states and all possible transitions).
 
