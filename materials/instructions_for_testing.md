@@ -1,7 +1,9 @@
 # Instructions for running tests
 
-In addition to testing for correct output data, the autotest system will check your program and its source code for the
-following points:
+In addition to testing for correct output, the automated testing system will
+check your program and its source code. To successfully pass the test, you must
+make sure that your program meets the requirements below. To do this,
+run the commands below locally and make sure that they do not output any errors.
 
 * **Style tests.** To check how much the beauty of your code meets the standards, for example, you can test your code
   using the _clang-format_ utility. The ```materials/linters``` folder contains the ```.clang-format``` file, which
@@ -22,6 +24,22 @@ following points:
   **Linux** 18.1.8
 
   Google Style: https://google.github.io/styleguide/cppguide.html
+
+ * **Static code analysis.** Sometimes (or not quite sometimes) it happens that
+   a correctly compiled C program runs completely incorrectly or terminates
+   with an error trying to access the wrong memory area. To prevent this from happening
+   errors at the stage of writing the program, use special utilities that analyze
+   check your source code for potential errors. Our autotest system uses
+   ```cppcheck``` for this. 
+
+   You can test your source code: \
+   ```cppcheck --enable=all --std=c11 --check-level=exhaustive --disable=information --suppress=missingIncludeSystem --suppress=missingInclude --suppress=checkersReport src/soursefile_name.c```  
+   You can also check all the source code files in the directory at once:  
+   ```cppcheck --enable=all --std=c11 --check-level=exhaustive --disable=information --suppress=missingIncludeSystem --suppress=missingInclude --suppress=checkersReport src```
+
+   Required version of cppcheck: \
+   **Mac** 2.13 \
+   **Linux** 2.13
 
 
 * **Test for correct operation with memory.** When writing C programs, it is very important to watch for memory leaks.
